@@ -7,9 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { BrandedLoader } from "../components/site/branded-loader";
+import { MotionController } from "../components/site/motion-controller";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -77,6 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "theme-color", content: "#003366" },
       { title: "Life Story Foundation — Help write a new life story" },
       {
         name: "description",
@@ -99,12 +102,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      {
+        rel: "icon",
+        href: "/490944534_1259268959535099_5059518161237736784_n.jpg",
+        type: "image/jpeg",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/490944534_1259268959535099_5059518161237736784_n.jpg",
+      },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:ital,wght@0,600;0,700;0,800;0,900;1,800&display=swap",
       },
       {
         rel: "stylesheet",
@@ -119,6 +130,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const [loaderState, setLoaderState] = useState<"visible" | "exiting" | "hidden">("visible");
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const exitTimer = window.setTimeout(() => setLoaderState("exiting"), reducedMotion ? 120 : 700);
+    const hideTimer = window.setTimeout(
+      () => {
+        setLoaderState("hidden");
+        document.body.style.overflow = previousOverflow;
+      },
+      reducedMotion ? 220 : 1050,
+    );
+
+    return () => {
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(hideTimer);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -126,6 +160,8 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <MotionController />
+        {loaderState !== "hidden" ? <BrandedLoader exiting={loaderState === "exiting"} /> : null}
         <Scripts />
       </body>
     </html>

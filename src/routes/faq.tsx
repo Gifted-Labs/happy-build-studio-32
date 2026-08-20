@@ -2,8 +2,12 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "../components/landing/motion";
 import { PageShell, siteImages } from "../components/site/page-shell";
+import { getProjectPhotoSets } from "../lib/google-drive";
 
-export const Route = createFileRoute("/faq")({ component: FaqPage });
+export const Route = createFileRoute("/faq")({
+  loader: () => getProjectPhotoSets(),
+  component: FaqPage,
+});
 
 const faqGroups = [
   {
@@ -113,6 +117,9 @@ const faqGroups = [
 ] as const;
 
 function FaqPage() {
+  const photoSets = Route.useLoaderData();
+  const heroImage = photoSets.educationAccess[1]?.url ?? siteImages.education;
+  const sidebarImage = photoSets.communitySupportDrive[2]?.url ?? siteImages.community;
   const [openItems, setOpenItems] = useState<Set<string>>(
     () => new Set(faqGroups.map((group) => `${group.id}-0`)),
   );
@@ -131,7 +138,7 @@ function FaqPage() {
       eyebrow="FAQS"
       title="Frequently asked questions"
       intro="Clear answers about donations, volunteering, partnerships, programs, and staying connected with our work."
-      image={siteImages.education}
+      image={heroImage}
     >
       <section className="bg-surface-page py-24 md:py-32">
         <div className="mx-auto grid max-w-max-width items-start gap-12 px-6 lg:grid-cols-[280px_1fr]">
@@ -151,7 +158,7 @@ function FaqPage() {
 
             <div className="relative min-h-[300px] overflow-hidden rounded-lg p-6 text-white">
               <img
-                src={siteImages.community}
+                src={sidebarImage}
                 alt="Life Story Foundation community support"
                 className="absolute inset-0 h-full w-full object-cover"
               />

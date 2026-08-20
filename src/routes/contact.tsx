@@ -2,16 +2,23 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ActionBand, InfoGrid, PageShell, siteImages } from "../components/site/page-shell";
 import { Icon } from "../components/landing/motion";
 import { SectionLabel } from "../components/landing/reference-layout";
+import { getProjectPhotoSets } from "../lib/google-drive";
 
-export const Route = createFileRoute("/contact")({ component: ContactPage });
+export const Route = createFileRoute("/contact")({
+  loader: () => getProjectPhotoSets(),
+  component: ContactPage,
+});
 
 function ContactPage() {
+  const photoSets = Route.useLoaderData();
+  const heroImage = photoSets.communitySupportDrive[0]?.url ?? siteImages.community;
+
   return (
     <PageShell
       eyebrow="CONTACT US"
       title="Let us talk about how you can help"
       intro="Questions about projects, partnerships, volunteering, or donations are welcome. Our team will direct your message to the right person."
-      image={siteImages.community}
+      image={heroImage}
     >
       <section className="bg-surface-page py-24 md:py-32">
         <div className="mx-auto grid max-w-max-width gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr]">

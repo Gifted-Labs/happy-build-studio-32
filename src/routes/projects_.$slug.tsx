@@ -3,19 +3,46 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ActionLink, SectionLabel } from "../components/landing/reference-layout";
 import { Icon } from "../components/landing/motion";
 import { ActionBand, PageShell, siteImages } from "../components/site/page-shell";
-import { getProject, projects } from "../data/projects";
+import { getProject, projects, type ProjectOutreach } from "../data/projects";
+import { getProjectPhotoSets, type ProjectPhotoSets } from "../lib/google-drive";
+
+// Only these two projects have a matching real Google Drive folder (see
+// getProjectPhotoSets). Clean Water Access and Community Health Outreach
+// keep their placeholder images since there's no real photo set for them.
+function withDrivePhotos(project: ProjectOutreach, photoSets: ProjectPhotoSets): ProjectOutreach {
+  const photos =
+    project.slug === "education-access"
+      ? photoSets.educationAccess
+      : project.slug === "community-support-drive"
+        ? photoSets.communitySupportDrive
+        : [];
+
+  if (photos.length === 0) return project;
+
+  const [hero, secondary = hero] = photos;
+  return {
+    ...project,
+    heroImage: hero.url,
+    secondaryImage: secondary.url,
+    gallery: photos.slice(0, 6).map((photo) => ({ src: photo.url, alt: photo.alt })),
+  };
+}
 
 export const Route = createFileRoute("/projects_/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const project = getProject(params.slug);
     if (!project) throw notFound();
-    return project;
+    const photoSets = await getProjectPhotoSets();
+    return {
+      project: withDrivePhotos(project, photoSets),
+      sidebarImage: photoSets.communitySupportDrive[0]?.url ?? siteImages.community,
+    };
   },
   component: ProjectDetailPage,
 });
 
 function ProjectDetailPage() {
-  const project = Route.useLoaderData();
+  const { project, sidebarImage } = Route.useLoaderData();
   const [openStep, setOpenStep] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
   const [activeImage, setActiveImage] = useState<number | null>(null);
@@ -89,7 +116,7 @@ function ProjectDetailPage() {
 
             <div className="relative min-h-[300px] overflow-hidden rounded-lg p-6 text-white">
               <img
-                src={siteImages.community}
+                src={sidebarImage}
                 alt="Life Story Foundation community support"
                 className="absolute inset-0 h-full w-full object-cover"
               />

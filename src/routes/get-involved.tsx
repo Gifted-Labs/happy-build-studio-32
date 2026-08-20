@@ -7,16 +7,23 @@ import {
   StatsBand,
   siteImages,
 } from "../components/site/page-shell";
+import { getProjectPhotoSets } from "../lib/google-drive";
 
-export const Route = createFileRoute("/get-involved")({ component: GetInvolvedPage });
+export const Route = createFileRoute("/get-involved")({
+  loader: () => getProjectPhotoSets(),
+  component: GetInvolvedPage,
+});
 
 function GetInvolvedPage() {
+  const photoSets = Route.useLoaderData();
+  const heroImage = photoSets.communitySupportDrive[1]?.url ?? siteImages.community;
+
   return (
     <PageShell
       eyebrow="GET INVOLVED"
       title="Choose how you want to make a difference"
       intro="Give time, expertise, funding, or a platform. We will help connect your contribution to a clear community need."
-      image={siteImages.community}
+      image={heroImage}
     >
       <InfoGrid
         eyebrow="WAYS TO HELP"

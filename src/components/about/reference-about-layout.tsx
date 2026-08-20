@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ActionLink, LandingFooter, LandingNav, SectionLabel } from "../landing/reference-layout";
 import { Icon } from "../landing/motion";
 import { siteImages } from "../site/page-shell";
+import { useRealPhoto } from "../site/real-photos-context";
 
 const team = [
   {
@@ -22,10 +23,12 @@ const team = [
 ];
 
 function AboutHero() {
+  const heroPhoto = useRealPhoto("community", 0, siteImages.about);
+
   return (
     <header className="relative flex min-h-[540px] items-end overflow-hidden bg-navy-900 pb-20 pt-32 text-white md:min-h-[620px]">
       <img
-        src={siteImages.about}
+        src={heroPhoto}
         alt="A young person participating in a Life Story Foundation program"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
@@ -45,17 +48,20 @@ function AboutHero() {
 }
 
 function FoundationStory() {
+  const educationPhoto = useRealPhoto("education", 4, siteImages.education);
+  const communityPhoto = useRealPhoto("community", 1, siteImages.community);
+
   return (
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[560px] w-full max-w-[520px]">
           <img
-            src={siteImages.education}
+            src={educationPhoto}
             alt="Children learning together"
             className="absolute left-[8%] top-[10%] h-[370px] w-[62%] rounded-lg object-cover shadow-xl"
           />
           <img
-            src={siteImages.community}
+            src={communityPhoto}
             alt="Community volunteers"
             className="absolute right-0 top-0 h-[230px] w-[44%] rounded-lg border-4 border-surface-page object-cover"
           />
@@ -127,7 +133,7 @@ function PurposeCards() {
       icon: "flag",
       title: "Our Mission",
       body: "To connect communities with practical resources and locally led development programs.",
-      image: siteImages.community,
+      image: useRealPhoto("community", 2, siteImages.community),
     },
     {
       icon: "visibility",
@@ -139,7 +145,7 @@ function PurposeCards() {
       icon: "favorite",
       title: "Our Values",
       body: "Dignity, transparency, partnership, and responsibility shape the way we serve.",
-      image: siteImages.education,
+      image: useRealPhoto("education", 5, siteImages.education),
     },
   ];
 
@@ -183,12 +189,15 @@ function PurposeCards() {
 }
 
 function ImpactSection() {
+  const communityPhoto = useRealPhoto("community", 3, siteImages.community);
+  const educationPhoto = useRealPhoto("education", 6, siteImages.education);
+
   return (
     <section className="bg-surface-muted py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[570px] w-full max-w-[520px]">
           <img
-            src={siteImages.community}
+            src={communityPhoto}
             alt="A child supported by community programs"
             className="absolute inset-y-0 left-[8%] w-[76%] rounded-lg object-cover"
           />
@@ -197,7 +206,7 @@ function ImpactSection() {
             <span className="text-sm text-on-surface-variant">People supported</span>
           </div>
           <img
-            src={siteImages.education}
+            src={educationPhoto}
             alt="Students in a Life Story Foundation program"
             className="absolute bottom-8 right-0 h-[210px] w-[42%] rounded-lg border-4 border-surface-muted object-cover"
           />
@@ -310,13 +319,9 @@ function ImpactHighlights() {
 }
 
 function CauseGallery() {
+  const educationPhoto = useRealPhoto("education", 7, siteImages.education);
   const causes = [
-    [
-      siteImages.education,
-      "Education",
-      "Education for children and young people",
-      "/projects#education",
-    ],
+    [educationPhoto, "Education", "Education for children and young people", "/projects#education"],
     [
       siteImages.water,
       "Clean Water",
@@ -387,10 +392,12 @@ function CauseGallery() {
 }
 
 function StoryBand() {
+  const backgroundPhoto = useRealPhoto("community", 5, siteImages.community);
+
   return (
     <section className="relative flex h-[560px] items-center justify-center overflow-hidden text-center text-white">
       <img
-        src={siteImages.community}
+        src={backgroundPhoto}
         alt="Life Story Foundation community program"
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -525,13 +532,14 @@ function FaqSection() {
     ],
   ];
   const [open, setOpen] = useState(0);
+  const bannerPhoto = useRealPhoto("community", 4, siteImages.community);
 
   return (
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto w-full max-w-[520px]">
           <img
-            src={siteImages.community}
+            src={bannerPhoto}
             alt="Community support program"
             className="aspect-[4/5] w-[82%] rounded-lg object-cover"
           />

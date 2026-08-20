@@ -18,6 +18,7 @@ import { Route as GetInvolvedRouteImport } from './routes/get-involved'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as ProjectsSlugRouteImport } from './routes/projects_.$slug'
+import { Route as ApiDriveImageFileIdRouteImport } from './routes/api/drive-image/$fileId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +65,11 @@ const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDriveImageFileIdRoute = ApiDriveImageFileIdRouteImport.update({
+  id: '/api/drive-image/$fileId',
+  path: '/api/drive-image/$fileId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/api/drive-image/$fileId': typeof ApiDriveImageFileIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/api/drive-image/$fileId': typeof ApiDriveImageFileIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/projects': typeof ProjectsRoute
   '/projects_/$slug': typeof ProjectsSlugRoute
+  '/api/drive-image/$fileId': typeof ApiDriveImageFileIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/projects'
     | '/projects/$slug'
+    | '/api/drive-image/$fileId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/projects'
     | '/projects/$slug'
+    | '/api/drive-image/$fileId'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/projects'
     | '/projects_/$slug'
+    | '/api/drive-image/$fileId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,6 +157,7 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRoute
   ProjectsRoute: typeof ProjectsRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
+  ApiDriveImageFileIdRoute: typeof ApiDriveImageFileIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/drive-image/$fileId': {
+      id: '/api/drive-image/$fileId'
+      path: '/api/drive-image/$fileId'
+      fullPath: '/api/drive-image/$fileId'
+      preLoaderRoute: typeof ApiDriveImageFileIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRoute,
   ProjectsRoute: ProjectsRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
+  ApiDriveImageFileIdRoute: ApiDriveImageFileIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

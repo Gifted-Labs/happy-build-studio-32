@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Icon } from "./motion";
+import { useRealPhoto } from "../site/real-photos-context";
 
 const images = {
   hero: "https://lh3.googleusercontent.com/aida-public/AB6AXuCUiZedOspvoax75aOqwYEAFd9x4ocwb3duusyDUWcEc_LY_BBnxV_-jppwffBln-IGF7JMwIEsoRQihY23Ad3czGWNXu6gLBpjvXB9z-Z8uzhQzCPUSqKj09peffHRsseDD0M5O3DzZS4Dm7zIyxeun3EtiwkoSARW_Fg8VY8jbBACqcLc6Je1lyk4si_l_rEgbgN2TRCgVYJXXwsxESfXIztIvGahChHAOKE7JZs9TDQlXlQZ-O3ZuQ",
@@ -150,10 +151,12 @@ export function LandingNav() {
 }
 
 function Hero() {
+  const heroPhoto = useRealPhoto("education", 3, images.hero);
+
   return (
     <section className="relative flex h-[clamp(680px,92svh,820px)] min-h-[680px] items-end overflow-hidden bg-navy-900 text-white">
       <img
-        src={images.hero}
+        src={heroPhoto}
         alt="Children learning together"
         className="absolute inset-0 h-full w-full object-cover"
       />
@@ -199,22 +202,26 @@ function Hero() {
 }
 
 function AboutCollage() {
+  const communityPhoto = useRealPhoto("community", 0, images.about);
+  const communityPhoto2 = useRealPhoto("community", 1, images.community);
+  const educationPhoto = useRealPhoto("education", 0, images.education);
+
   return (
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[560px] w-full max-w-[520px]">
           <img
-            src={images.about}
+            src={communityPhoto}
             alt="Community volunteer"
             className="absolute left-[13%] top-[8%] h-[380px] w-[64%] rounded-lg object-cover shadow-xl"
           />
           <img
-            src={images.community}
+            src={communityPhoto2}
             alt="Community gathering"
             className="absolute right-0 top-0 h-[220px] w-[43%] rounded-lg border-4 border-surface-page object-cover"
           />
           <img
-            src={images.education}
+            src={educationPhoto}
             alt="Education program"
             className="absolute bottom-0 left-0 h-[250px] w-[43%] rounded-lg border-4 border-surface-page object-cover shadow-lg"
           />
@@ -378,12 +385,14 @@ function ServicesMatrix() {
 }
 
 function ImpactSplit() {
+  const communityPhoto = useRealPhoto("community", 2, images.community);
+
   return (
     <section className="bg-surface-muted py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[570px] w-full max-w-[520px]">
           <img
-            src={images.community}
+            src={communityPhoto}
             alt="Child receiving support"
             className="absolute inset-y-0 left-[8%] w-[76%] rounded-lg object-cover"
           />
@@ -424,7 +433,7 @@ function ImpactSplit() {
               ))}
             </div>
             <img
-              src={images.education}
+              src={useRealPhoto("education", 1, images.education)}
               alt="Children in a supported community"
               className="h-full min-h-[220px] w-full object-cover"
             />
@@ -467,13 +476,9 @@ function StoryBand() {
 }
 
 function CauseGallery() {
+  const educationPhoto = useRealPhoto("education", 2, images.education);
   const causes = [
-    [
-      images.education,
-      "Education",
-      "Education for children and young people",
-      "/projects#education",
-    ],
+    [educationPhoto, "Education", "Education for children and young people", "/projects#education"],
     [images.water, "Clean Water", "Safe water and sanitation programs", "/projects#clean-water"],
     [images.health, "Healthcare", "Community healthcare and medical aid", "/projects#healthcare"],
   ];
@@ -748,7 +753,7 @@ function FaqSection() {
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto w-full max-w-[520px]">
           <img
-            src={images.about}
+            src={useRealPhoto("community", 3, images.about)}
             alt="Community support"
             className="aspect-[4/5] w-[82%] rounded-lg object-cover"
           />
@@ -796,10 +801,12 @@ function FaqSection() {
 }
 
 function TestimonialBand() {
+  const backgroundPhoto = useRealPhoto("community", 4, images.hero);
+
   return (
     <section className="relative min-h-[600px] overflow-hidden py-24 text-white">
       <img
-        src={images.hero}
+        src={backgroundPhoto}
         alt="Community volunteers"
         className="absolute inset-0 h-full w-full object-cover"
       />

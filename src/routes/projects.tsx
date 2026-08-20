@@ -3,20 +3,29 @@ import {
   ActionBand,
   InfoGrid,
   PageShell,
+  PhotoGallery,
   SplitFeature,
   StatsBand,
   siteImages,
 } from "../components/site/page-shell";
+import { getProjectPhotoSets } from "../lib/google-drive";
 
-export const Route = createFileRoute("/projects")({ component: ProjectsPage });
+export const Route = createFileRoute("/projects")({
+  loader: () => getProjectPhotoSets(),
+  component: ProjectsPage,
+});
 
 function ProjectsPage() {
+  const photoSets = Route.useLoaderData();
+  const galleryPhotos = [...photoSets.educationAccess, ...photoSets.communitySupportDrive];
+  const heroImage = photoSets.educationAccess[0]?.url ?? siteImages.education;
+
   return (
     <PageShell
       eyebrow="OUR PROJECTS"
       title="Practical programs built around real needs"
       intro="From classrooms to clinics and clean water systems, each project is planned with the people who will use and sustain it."
-      image={siteImages.education}
+      image={heroImage}
     >
       <InfoGrid
         eyebrow="PROGRAM AREAS"
@@ -70,6 +79,12 @@ function ProjectsPage() {
           { icon: "water_drop", value: "20+", label: "Active projects" },
           { icon: "diversity_3", value: "12", label: "Partner communities" },
         ]}
+      />
+      <PhotoGallery
+        eyebrow="FROM THE FIELD"
+        title="Photos from our project communities"
+        intro="Real moments from our Education Access and Community Support outreaches."
+        items={galleryPhotos}
       />
       <ActionBand
         title="Build the next project with us"

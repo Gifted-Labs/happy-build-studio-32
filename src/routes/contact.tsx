@@ -35,14 +35,24 @@ function ContactPage() {
                 </span>
                 contact@lifestory.org
               </a>
+              {/* tel: uses the international form so the link works from abroad. */}
               <a
-                href="tel:+233000000000"
+                href="tel:+233550446478"
                 className="flex min-h-14 items-center gap-4 border-b border-white/15 pb-3 hover:text-brand-mint"
               >
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-mint text-ink-900">
                   <Icon name="call" className="text-[19px]" />
                 </span>
-                +233 000 000 000
+                055 044 6478
+              </a>
+              <a
+                href="tel:+233545765993"
+                className="flex min-h-14 items-center gap-4 border-b border-white/15 pb-3 hover:text-brand-mint"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-mint text-ink-900">
+                  <Icon name="call" className="text-[19px]" />
+                </span>
+                054 576 5993
               </a>
               <div className="flex min-h-14 items-center gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-mint text-ink-900">

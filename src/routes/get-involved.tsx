@@ -63,9 +63,9 @@ function GetInvolvedPage() {
         title="Shared effort creates stronger programs"
         intro="Volunteers and partners expand our skills, reach, and ability to respond to practical community priorities."
         items={[
-          { icon: "volunteer_activism", value: "100+", label: "Active volunteers" },
-          { icon: "schedule", value: "2K+", label: "Hours contributed" },
-          { icon: "handshake", value: "15+", label: "Program partners" },
+          { icon: "volunteer_activism", value: "2019", label: "Serving since" },
+          { icon: "school", value: "200+", label: "Pupils given materials" },
+          { icon: "restaurant", value: "100+", label: "Plates served at Krofrom" },
         ]}
       />
       <VolunteerForm />

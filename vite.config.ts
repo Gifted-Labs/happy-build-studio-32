@@ -85,7 +85,12 @@ export default defineConfig({
        * render identical HTML to their canonical page. Skip them so they neither
        * get prerendered twice nor show up in the sitemap as duplicate URLs.
        */
-      filter: (page: { path: string }) => !page.path.includes("#") && !page.path.includes("?"),
+      filter: (page: { path: string }) =>
+        !page.path.includes("#") &&
+        !page.path.includes("?") &&
+        // The admin area reads D1 per request and must never be published as
+        // static HTML or listed in the sitemap.
+        !page.path.startsWith("/admin"),
     },
 
     // Routes to start from, including the dynamic project pages, so a route stays

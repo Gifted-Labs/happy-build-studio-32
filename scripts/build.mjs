@@ -68,7 +68,7 @@ cpSync(stash, "dist/public", { recursive: true });
 rmSync(stash, { recursive: true, force: true });
 
 /**
- * Drop fragment and query URLs from the sitemap.
+ * Drop fragment, query, and private URLs from the sitemap.
  *
  * Link crawling records every `#anchor` and `?query` variant it encounters as a
  * discovered page. `prerender.filter` keeps them from being rendered twice but
@@ -78,10 +78,12 @@ rmSync(stash, { recursive: true, force: true });
 const sitemapPath = "dist/public/sitemap.xml";
 if (existsSync(sitemapPath)) {
   const before = readFileSync(sitemapPath, "utf8");
-  const after = before.replace(
-    /\s*<url>(?:(?!<\/url>)[\s\S])*?<loc>[^<]*[#?][^<]*<\/loc>[\s\S]*?<\/url>/g,
-    "",
-  );
+  const after = before
+    .replace(/\s*<url>(?:(?!<\/url>)[\s\S])*?<loc>[^<]*[#?][^<]*<\/loc>[\s\S]*?<\/url>/g, "")
+    // `prerender.filter` keeps /admin from being rendered but does not feed the
+    // sitemap, which is built from the full crawl list — so the admin area would
+    // otherwise be advertised to search engines.
+    .replace(/\s*<url>(?:(?!<\/url>)[\s\S])*?<loc>[^<]*\/admin[^<]*<\/loc>[\s\S]*?<\/url>/g, "");
   const removed = (before.match(/<loc>/g) ?? []).length - (after.match(/<loc>/g) ?? []).length;
   writeFileSync(sitemapPath, after);
   step(

@@ -57,8 +57,10 @@ const INDEXABLE_HOSTS = new Set([
 
 /** Tell crawlers to leave non-production hosts alone. */
 function applyIndexingPolicy(request: Request, response: Response): Response {
-  const host = new URL(request.url).hostname.toLowerCase();
-  if (INDEXABLE_HOSTS.has(host)) return response;
+  const url = new URL(request.url);
+  const host = url.hostname.toLowerCase();
+  // The admin area is never indexable, on any host.
+  if (INDEXABLE_HOSTS.has(host) && !url.pathname.startsWith("/admin")) return response;
 
   // Headers on a returned Response can be immutable; clone to be safe.
   const headers = new Headers(response.headers);

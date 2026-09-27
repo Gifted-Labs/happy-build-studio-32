@@ -23,6 +23,14 @@ type Bindings = {
   RESEND_API_KEY?: string;
   /** Verified Resend sender, e.g. "Life Story Foundation <hello@lifestory.org>". */
   RESEND_FROM?: string;
+  /**
+   * Cloudflare Access application audience (AUD) tag and team domain, used to
+   * verify the admin area's Access assertion. Neither is a secret; both are
+   * required, and their absence denies access rather than granting it. See
+   * lib/server/access.ts.
+   */
+  CF_ACCESS_AUD?: string;
+  CF_ACCESS_TEAM_DOMAIN?: string;
   /** Where submission notifications are delivered. */
   NOTIFY_EMAIL?: string;
 };

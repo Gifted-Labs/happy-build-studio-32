@@ -22,6 +22,22 @@
   "compatibility_flags": ["nodejs_compat"],
 
   /**
+   * Preview host. The live site stays on the Pages project at the apex domain;
+   * this subdomain serves the Worker so the new build can be reviewed on the real
+   * domain without touching production. `custom_domain` makes wrangler create the
+   * DNS record and the route on deploy.
+   *
+   * src/server.ts sends `x-robots-tag: noindex` for every host that is not the
+   * apex, so this preview never competes with the live site in search.
+   */
+  "routes": [
+    {
+      "pattern": "preview.lifestorycharitablefoundation.com",
+      "custom_domain": true
+    }
+  ],
+
+  /**
    * Form submissions (see migrations/ and src/lib/submit-form.ts).
    *
    * `database_id` is pinned rather than resolved by name: the config wrangler
@@ -81,7 +97,7 @@
      * first deploy, as lifestory-foundation.<subdomain>.workers.dev) if you want
      * the forms to work on that URL before the real domain is attached.
      */
-    "TURNSTILE_HOSTNAMES": "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com"
+    "TURNSTILE_HOSTNAMES": "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com,preview.lifestorycharitablefoundation.com"
   },
 
   // Form submissions are the only server-side path, so sample every request —

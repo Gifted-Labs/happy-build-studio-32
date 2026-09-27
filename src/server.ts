@@ -44,12 +44,38 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+/**
+ * Hosts whose pages belong in search results. Everything else — the workers.dev
+ * URL, per-deployment preview URLs, and any preview subdomain — serves the same
+ * content, so without this they compete with the real site for its own rankings
+ * and expose pre-release pages to crawlers.
+ */
+const INDEXABLE_HOSTS = new Set([
+  "lifestorycharitablefoundation.com",
+  "www.lifestorycharitablefoundation.com",
+]);
+
+/** Tell crawlers to leave non-production hosts alone. */
+function applyIndexingPolicy(request: Request, response: Response): Response {
+  const host = new URL(request.url).hostname.toLowerCase();
+  if (INDEXABLE_HOSTS.has(host)) return response;
+
+  // Headers on a returned Response can be immutable; clone to be safe.
+  const headers = new Headers(response.headers);
+  headers.set("x-robots-tag", "noindex, nofollow");
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return applyIndexingPolicy(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

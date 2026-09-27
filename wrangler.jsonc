@@ -97,7 +97,18 @@
      * first deploy, as lifestory-foundation.<subdomain>.workers.dev) if you want
      * the forms to work on that URL before the real domain is attached.
      */
-    "TURNSTILE_HOSTNAMES": "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com,preview.lifestorycharitablefoundation.com"
+    "TURNSTILE_HOSTNAMES": "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com,preview.lifestorycharitablefoundation.com",
+
+    /**
+     * Cloudflare Access application for /admin. Neither value is a secret: the
+     * AUD is a public identifier, and verification checks a signed token against
+     * it rather than treating it as a password. Both must be present — with
+     * either missing, lib/server/access.ts denies every request rather than
+     * allowing them, so a misconfiguration closes the admin area instead of
+     * exposing the personal details held in the submissions table.
+     */
+    "CF_ACCESS_AUD": "37c3cb22e27dfd826568160d1e7b9ba612b14e7a996538355eb91a2d23b0b9c1",
+    "CF_ACCESS_TEAM_DOMAIN": "tight-base-36e8.cloudflareaccess.com"
   },
 
   // Form submissions are the only server-side path, so sample every request —

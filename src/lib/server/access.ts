@@ -45,8 +45,17 @@ function base64UrlToBytes(value: string): Uint8Array<ArrayBuffer> {
   return bytes;
 }
 
+/**
+ * A segment that will not decode is a malformed token, which is a denial — not
+ * an unexpected failure. Letting the parse error escape turned a garbage
+ * `cf-access-jwt-assertion` header into a 500 instead of a clean rejection.
+ */
 function decodeJson<T>(segment: string): T {
-  return JSON.parse(new TextDecoder().decode(base64UrlToBytes(segment))) as T;
+  try {
+    return JSON.parse(new TextDecoder().decode(base64UrlToBytes(segment))) as T;
+  } catch {
+    throw new AccessDenied("Access assertion could not be decoded.");
+  }
 }
 
 /** `https://<team>.cloudflareaccess.com`, normalised from whatever form is configured. */

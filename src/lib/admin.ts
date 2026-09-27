@@ -46,11 +46,12 @@ export const loadInbox = createServerFn({ method: "GET" })
     try {
       await requireAdmin(getRequest());
     } catch (error) {
-      if (error instanceof AccessDenied) {
-        console.warn("[admin] denied:", error.message);
-        return { ok: false, error: "Not authorised." };
-      }
-      throw error;
+      // Fail closed on anything, not only AccessDenied. An unexpected error
+      // inside verification must not become a 500 that leaves the caller
+      // guessing whether the page is protected — it is a refusal.
+      const reason = error instanceof AccessDenied ? error.message : String(error);
+      console.warn("[admin] denied:", reason);
+      return { ok: false, error: "Not authorised." };
     }
 
     const db = getDb();

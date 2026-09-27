@@ -200,6 +200,46 @@ export function ActionBand({
   );
 }
 
+export function PhotoGallery({
+  eyebrow,
+  title,
+  intro,
+  items,
+}: {
+  eyebrow: string;
+  title: string;
+  intro?: string;
+  items: Array<{ id: string; alt: string; url: string }>;
+}) {
+  if (items.length === 0) return null;
+
+  return (
+    <section className="bg-surface-muted py-24 md:py-32">
+      <div className="mx-auto max-w-max-width px-6">
+        <div className="mx-auto mb-14 max-w-3xl text-center">
+          <SectionLabel>{eyebrow}</SectionLabel>
+          <h2 className="font-display text-h1 text-navy-900">{title}</h2>
+          {intro ? (
+            <p className="mt-4 max-w-2xl text-body-lg text-on-surface-variant">{intro}</p>
+          ) : null}
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {items.map((item) => (
+            <div key={item.id} className="overflow-hidden rounded-lg">
+              <img
+                src={item.url}
+                alt={item.alt}
+                loading="lazy"
+                className="aspect-square h-full w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function StatsBand({
   eyebrow,
   title,

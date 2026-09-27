@@ -71,6 +71,9 @@ export type InfoItem = {
   icon: string;
   title: string;
   body: string;
+  /** Optional photograph. Given one, the card leads with it instead of the icon. */
+  image?: MediaKey;
+  imageAlt?: string;
 };
 
 type InfoGridProps = {
@@ -78,9 +81,11 @@ type InfoGridProps = {
   title: string;
   intro?: string;
   items: InfoItem[];
+  /** Columns at the widest breakpoint. Match it to the item count so the row fills. */
+  columns?: 3 | 4;
 };
 
-export function InfoGrid({ eyebrow, title, intro, items }: InfoGridProps) {
+export function InfoGrid({ eyebrow, title, intro, items, columns = 4 }: InfoGridProps) {
   return (
     <section className="bg-white py-24 md:py-32">
       <div className="mx-auto max-w-max-width px-6">
@@ -91,26 +96,45 @@ export function InfoGrid({ eyebrow, title, intro, items }: InfoGridProps) {
             <p className="mt-4 max-w-2xl text-body-lg text-on-surface-variant">{intro}</p>
           ) : null}
         </div>
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+        <div
+          className={`grid grid-cols-1 gap-5 md:grid-cols-2 ${
+            columns === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
+          }`}
+        >
           {items.map((item) => (
             <article
               id={item.id}
               key={item.title}
-              className="min-h-[260px] scroll-mt-24 rounded-lg bg-surface-page p-7"
+              className="flex min-h-[260px] flex-col overflow-hidden rounded-lg bg-surface-page scroll-mt-24"
             >
-              <div className="mb-8 grid h-12 w-12 place-items-center rounded-full bg-primary text-white">
-                <Icon name={item.icon} filled className="text-[21px]" />
-              </div>
-              <h3 className="mb-3 font-display text-h3 text-navy-900">{item.title}</h3>
-              <p className="font-body-sm text-on-surface-variant">{item.body}</p>
-              {item.href ? (
-                <SiteLink
-                  href={item.href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
-                >
-                  View project <Icon name="arrow_outward" className="text-[17px]" />
-                </SiteLink>
+              {item.image ? (
+                <ResponsiveImage
+                  src={item.image}
+                  alt={item.imageAlt ?? item.title}
+                  width={800}
+                  height={450}
+                  sizes="(min-width: 1024px) 30vw, (min-width: 768px) 46vw, 92vw"
+                  fit="cover"
+                  className="aspect-[16/9] w-full object-cover"
+                />
               ) : null}
+              <div className="flex flex-1 flex-col p-7">
+                {item.image ? null : (
+                  <div className="mb-8 grid h-12 w-12 place-items-center rounded-full bg-primary text-white">
+                    <Icon name={item.icon} filled className="text-[21px]" />
+                  </div>
+                )}
+                <h3 className="mb-3 font-display text-h3 text-navy-900">{item.title}</h3>
+                <p className="font-body-sm text-on-surface-variant">{item.body}</p>
+                {item.href ? (
+                  <SiteLink
+                    href={item.href}
+                    className="mt-auto inline-flex items-center gap-2 pt-6 text-sm font-semibold text-primary"
+                  >
+                    View project <Icon name="arrow_outward" className="text-[17px]" />
+                  </SiteLink>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>

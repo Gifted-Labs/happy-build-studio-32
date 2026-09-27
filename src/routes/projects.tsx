@@ -8,7 +8,9 @@ import {
 } from "../components/site/page-shell";
 import { projects } from "../data/projects";
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com").replace(/\/$/, "");
+const SITE_URL = (
+  import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com"
+).replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -51,12 +53,16 @@ function ProjectsPage() {
       <InfoGrid
         eyebrow="OUR OUTREACHES"
         title="Where the Foundation has worked"
+        columns={3}
         items={projects.map((project) => ({
           id: project.slug,
           href: `/projects/${project.slug}`,
           icon: CATEGORY_ICONS[project.category] ?? "favorite",
           title: project.shortTitle,
           body: project.summary,
+          // Each card leads with that outreach's own hero photograph.
+          image: project.heroImage,
+          imageAlt: project.gallery[0]?.alt ?? project.shortTitle,
         }))}
       />
       <SplitFeature

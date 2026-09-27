@@ -58,7 +58,7 @@ function ContactPage() {
                 <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-mint text-ink-900">
                   <Icon name="location_on" className="text-[19px]" />
                 </span>
-                Accra, Ghana
+                Kumasi, Ghana
               </div>
             </div>
           </div>

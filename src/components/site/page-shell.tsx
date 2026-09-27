@@ -13,6 +13,9 @@ export const siteImages = {
   water: "water",
   health: "health",
   news: "news1",
+  portrait: "portrait",
+  landscape: "landscape",
+  hero: "hero",
 } satisfies Record<string, MediaKey>;
 
 type PageShellProps = {

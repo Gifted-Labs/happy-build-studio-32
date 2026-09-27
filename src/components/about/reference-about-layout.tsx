@@ -77,7 +77,7 @@ function FoundationStory() {
           />
           <ResponsiveImage
             src={siteImages.health}
-            alt="Community health outreach"
+            alt="Young people at a Life Story Foundation outreach"
             width={458}
             height={500}
             sizes="(min-width: 1024px) 229px, 44vw"
@@ -88,23 +88,26 @@ function FoundationStory() {
         <div>
           <SectionLabel>ABOUT US</SectionLabel>
           <h2 className="max-w-xl font-display text-h1 text-navy-900">
-            Growing together to create lasting impact
+            Helping people write a new life story
           </h2>
           <p className="mt-5 max-w-xl text-body text-on-surface-variant">
-            From grassroots initiatives to larger community programs, we grow with one purpose: to
-            serve people with integrity, compassion, and practical support.
+            Life Story Foundation was established in 2019 under the visionary leadership of Mr.
+            Aboagye Divine, founder and CEO of Life Story Group, Ghana. With a deep commitment to
+            enhancing the lives of individuals in need and orphans, he began this charitable
+            organization to provide vital resources, education, and steadfast support to vulnerable
+            populations.
           </p>
           <div className="mt-8 overflow-hidden rounded-lg bg-white px-6 shadow-sm">
             {[
               [
-                "track_changes",
-                "Mission-driven organization",
-                "We focus on sustainable programs that strengthen communities and expand opportunity.",
+                "diversity_3",
+                "Serving people in need and orphans",
+                "We work with vulnerable populations, helping them recognise their own potential and navigate their paths to success.",
               ],
               [
-                "verified",
-                "Transparent, trusted, and impactful",
-                "Clear reporting and responsible stewardship guide every partnership we build.",
+                "trending_up",
+                "Immediate needs and lasting resilience",
+                "Our programs are designed not only to meet immediate needs but to foster long-term self-sufficiency and resilience.",
               ],
             ].map(([icon, title, body], index) => (
               <div
@@ -149,20 +152,20 @@ function PurposeCards() {
     {
       icon: "flag",
       title: "Our Mission",
-      body: "To connect communities with practical resources and locally led development programs.",
+      body: "To create opportunities for growth and development by providing essential resources, education, and unwavering support to individuals in need and orphans.",
       image: siteImages.community,
     },
     {
       icon: "visibility",
       title: "Our Vision",
-      body: "A Ghana where every child can learn, thrive, and shape a hopeful future.",
-      image: siteImages.water,
+      body: "A world where every individual, whatever their circumstances, has the opportunity to thrive and create their own narrative of success.",
+      image: siteImages.education,
     },
     {
       icon: "favorite",
       title: "Our Values",
-      body: "Dignity, transparency, partnership, and responsibility shape the way we serve.",
-      image: siteImages.education,
+      body: "Dignity, respect, and empathy — an inclusive environment where every voice is heard and valued.",
+      image: siteImages.portrait,
     },
   ];
 
@@ -243,8 +246,8 @@ function ImpactSection() {
             Transforming generosity into meaningful change
           </h2>
           <p className="mt-5 text-body text-on-surface-variant">
-            We design practical programs across education, healthcare, clean water, and family
-            support with communities at the center.
+            We provide essential resources, education, and steadfast support to individuals in need
+            and orphans — meeting immediate needs while building long-term self-sufficiency.
           </p>
           <div className="mt-8 grid overflow-hidden rounded-lg bg-white shadow-sm md:grid-cols-[1fr_190px]">
             <div className="p-6">
@@ -297,14 +300,14 @@ function ImpactHighlights() {
     ],
     [
       "diversity_3",
-      "Multi-cause support",
-      "Help education, healthcare, clean water, and families.",
+      "Support where it is needed",
+      "Learning materials, provisions for children's homes, and community relief.",
     ],
   ];
   const stats = [
-    ["6+", "Years of local service"],
-    ["500+", "People supported"],
-    ["20+", "Community projects"],
+    ["2019", "Serving since"],
+    ["200+", "Pupils given learning materials"],
+    ["100+", "Plates served at Krofrom"],
   ];
 
   return (
@@ -353,20 +356,20 @@ function CauseGallery() {
     [
       siteImages.education,
       "Education",
-      "Education for children and young people",
-      "/projects#education",
+      "Learning materials for pupils who need them",
+      "/projects/books-and-pens",
     ],
     [
-      siteImages.water,
-      "Clean Water",
-      "Safe water and sanitation programs",
-      "/projects#clean-water",
+      siteImages.community,
+      "Community Outreach",
+      "Festive meals and relief for people often overlooked",
+      "/projects/krofrom-christmas-outreach",
     ],
     [
-      siteImages.health,
-      "Healthcare",
-      "Community healthcare and medical aid",
-      "/projects#healthcare",
+      siteImages.about,
+      "Children's Homes",
+      "Provisions and visits for children in care",
+      "/projects/remar-childrens-home",
     ],
   ];
 
@@ -520,7 +523,7 @@ function TestimonialBand() {
     <section className="relative overflow-hidden py-24 text-white md:py-32">
       <ResponsiveImage
         src={siteImages.health}
-        alt="Community healthcare volunteers"
+        alt="Life Story Foundation volunteers at an outreach"
         width={2000}
         height={1200}
         sizes="100vw"

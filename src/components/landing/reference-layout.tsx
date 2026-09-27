@@ -181,8 +181,8 @@ function Hero() {
             Hope begins with you
           </div>
           <p className="max-w-sm text-sm leading-6 text-white/75">
-            Every contribution adds up to real change through education, healthcare, clean water,
-            and sustainable community support.
+            Every contribution adds up to real change through learning materials, provisions, and
+            sustainable community support.
           </p>
         </div>
         <div className="grid items-end gap-8 md:grid-cols-[1fr_280px]">
@@ -302,18 +302,18 @@ function ServicesMatrix() {
     [
       "school",
       "Education support",
-      "Scholarships, supplies, digital learning access, and mentorship.",
+      "Exercise books, pens, and the everyday materials pupils need to learn.",
     ],
     [
-      "health_and_safety",
-      "Healthcare outreach",
-      "Screenings, nutrition support, and essential health education.",
+      "volunteer_activism",
+      "Orphans and children's homes",
+      "Provisions, visits, and practical support for children in care.",
     ],
     ["restaurant", "Food security", "Community food programs and practical family assistance."],
     [
-      "water_drop",
-      "Clean water access",
-      "Safe water systems, sanitation, training, and maintenance.",
+      "sports_soccer",
+      "Youth and community outreach",
+      "Sports kit, festive meals, and relief for people often overlooked.",
     ],
   ];
 
@@ -436,7 +436,7 @@ function ImpactSplit() {
             Transforming generosity into meaningful change
           </h2>
           <p className="mt-5 text-body text-on-surface-variant">
-            We design sustainable programs across education, healthcare, clean water, and family
+            We provide resources, education, and support to individuals in need and orphans, family
             support.
           </p>
           <div className="mt-8 grid overflow-hidden rounded-lg bg-white shadow-sm md:grid-cols-[1fr_190px]">
@@ -515,8 +515,18 @@ function CauseGallery() {
       "Education for children and young people",
       "/projects#education",
     ],
-    [images.water, "Clean Water", "Safe water and sanitation programs", "/projects#clean-water"],
-    [images.health, "Healthcare", "Community healthcare and medical aid", "/projects#healthcare"],
+    [
+      images.community,
+      "Community",
+      "Festive meals and relief for people often overlooked",
+      "/projects/krofrom-christmas-outreach",
+    ],
+    [
+      images.about,
+      "Children's Homes",
+      "Provisions and visits for children in care",
+      "/projects/remar-childrens-home",
+    ],
   ];
 
   return (
@@ -582,12 +592,12 @@ function Highlights() {
   const features = [
     ["encrypted", "Secure giving", "Clear and responsible donation stewardship."],
     ["monitoring", "Impact tracking", "Project milestones and measurable outcomes."],
-    ["diversity_3", "Multi-cause support", "Education, healthcare, water, and families."],
+    ["diversity_3", "Support where needed", "Learning materials, children's homes, and relief."],
   ];
   const stats = [
-    ["6+", "Years of impact"],
-    ["500+", "Children supported"],
-    ["20+", "Active projects"],
+    ["2019", "Serving since"],
+    ["200+", "Pupils given materials"],
+    ["100+", "Plates served at Krofrom"],
   ];
 
   return (
@@ -703,7 +713,7 @@ function DonationSection() {
           <SectionLabel dark>MAKE A DONATION</SectionLabel>
           <h2 className="max-w-xl font-display text-h1">Your kindness can change a life today</h2>
           <p className="mt-5 max-w-xl text-body text-white/70">
-            Every contribution helps provide education, clean water, healthcare, and hope.
+            Every contribution helps provide education, provisions, support, and hope.
           </p>
           <div className="mt-14 flex gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-brand-mint text-ink-900">
@@ -1024,10 +1034,10 @@ export function LandingFooter() {
                 <SiteLink href="/projects#education">Education support</SiteLink>
               </li>
               <li>
-                <SiteLink href="/projects#healthcare">Community healthcare</SiteLink>
+                <SiteLink href="/projects/remar-childrens-home">Children's homes</SiteLink>
               </li>
               <li>
-                <SiteLink href="/projects#clean-water">Clean water access</SiteLink>
+                <SiteLink href="/projects/krofrom-christmas-outreach">Community outreach</SiteLink>
               </li>
               <li>
                 <SiteLink href="/projects#community">Community support</SiteLink>

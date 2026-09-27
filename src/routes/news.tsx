@@ -19,7 +19,7 @@ const stories: Array<{
     image: "news1",
     date: "October 24, 2024",
     title: "Opening the New Community Hub in Kumasi",
-    body: "The new hub gives families a shared place for tutoring, skills workshops, health outreach, and local meetings.",
+    body: "The new hub gives families a shared place for tutoring, skills workshops, and local meetings.",
   },
   {
     id: "digital-divide",
@@ -102,7 +102,7 @@ function NewsPage() {
       <SplitFeature
         eyebrow="FEATURED STORY"
         title="A community hub built around shared opportunity"
-        body="The new hub creates one reliable place for tutoring, practical skills workshops, health outreach, and community meetings. It reflects what becomes possible when local knowledge and committed support work together."
+        body="The new hub creates one reliable place for tutoring, practical skills workshops, and community meetings. It reflects what becomes possible when local knowledge and committed support work together."
         image={siteImages.news}
         imageAlt="Life Story Foundation community hub"
         actionLabel="Support Community Programs"

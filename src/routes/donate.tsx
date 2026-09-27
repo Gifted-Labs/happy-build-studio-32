@@ -19,8 +19,8 @@ function DonatePage() {
     <PageShell
       eyebrow="MAKE A DONATION"
       title="Turn generosity into practical support"
-      intro="Your contribution supports education, healthcare, clean water, and community-led development across Ghana."
-      image={siteImages.health}
+      intro="Your contribution provides learning materials, provisions for children's homes, and relief for communities around Kumasi."
+      image={siteImages.community}
     >
       <section className="bg-surface-page py-24 md:py-32">
         <div className="mx-auto grid max-w-max-width items-start gap-12 px-6 lg:grid-cols-2">
@@ -28,14 +28,14 @@ function DonatePage() {
             <SectionLabel>YOUR IMPACT</SectionLabel>
             <h2 className="font-display text-h1 text-navy-900">Give with clarity and confidence</h2>
             <p className="mt-5 text-body-lg text-on-surface-variant">
-              Donations help cover school materials, community health outreach, clean water systems,
-              transport, local staff, and project monitoring.
+              Donations help cover exercise books and pens, provisions for children's homes, festive
+              meals, sports kit, and the transport that gets them where they are needed.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-4">
               {[
                 ["GH₵50", "Learning materials"],
-                ["GH₵100", "Health outreach"],
-                ["GH₵250", "Water project supplies"],
+                ["GH₵100", "Provisions for a children's home"],
+                ["GH₵250", "Meals for a community outreach"],
                 ["Monthly", "Reliable program support"],
               ].map(([amount, use]) => (
                 <div key={amount} className="min-h-[130px] rounded-lg bg-white p-5 shadow-sm">
@@ -66,7 +66,7 @@ function DonatePage() {
           {
             icon: "tune",
             title: "Choose a Cause",
-            body: "Direct your support toward education, healthcare, clean water, or community needs.",
+            body: "Direct your support toward learning materials, children's homes, or community outreach.",
           },
           {
             icon: "event_repeat",

@@ -21,7 +21,7 @@ const faqGroups = [
       ],
       [
         "Can I volunteer with your organization?",
-        "Yes. We welcome volunteers in education, health outreach, communications, events, fundraising, and program operations.",
+        "Yes. We welcome volunteers for school outreaches, visits to children's homes, community events, communications, fundraising, and program operations.",
       ],
       [
         "How can I make a donation?",
@@ -69,7 +69,7 @@ const faqGroups = [
       ],
       [
         "What types of volunteer opportunities are available?",
-        "Opportunities can include education support, health outreach, communications, events, fundraising, administration, and project coordination.",
+        "Opportunities can include education support, children's home visits, community outreaches, communications, events, fundraising, administration, and project coordination.",
       ],
       [
         "Can I volunteer for a single event or on a regular basis?",

@@ -10,7 +10,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { projects } from "./src/data/projects";
 
 // Public origin, used for absolute URLs in the sitemap and social meta.
-const SITE_URL = process.env.VITE_SITE_URL ?? "https://lifestory.org";
+const SITE_URL = process.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com";
 
 /**
  * `npm run build` runs vite twice — see scripts/build.mjs.

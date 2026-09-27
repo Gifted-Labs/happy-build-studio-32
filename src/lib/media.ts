@@ -110,7 +110,7 @@ export const media = {
 
 export type MediaKey = keyof typeof media;
 
-/** Host serving the R2 bucket, e.g. "https://media.lifestory.org". */
+/** Host serving the R2 bucket, e.g. "https://media.lifestorycharitablefoundation.com". */
 const MEDIA_HOST = (import.meta.env.VITE_MEDIA_HOST ?? "").replace(/\/$/, "");
 
 /**

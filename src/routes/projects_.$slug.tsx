@@ -8,7 +8,7 @@ import { SiteLink } from "../components/site/site-link";
 import { mediaSrc, cfImage } from "../lib/media";
 import { getProject, projects } from "../data/projects";
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestory.org").replace(/\/$/, "");
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com").replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects_/$slug")({
   loader: ({ params }) => {

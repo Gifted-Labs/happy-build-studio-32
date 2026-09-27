@@ -15,7 +15,7 @@ type Bindings = {
   TURNSTILE_SECRET_KEY?: string;
   /**
    * Comma-separated frontend hostnames a solved challenge may come from, e.g.
-   * "lifestory.org,www.lifestory.org". Deployment-specific on purpose: the
+   * "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com". Deployment-specific on purpose: the
    * production list must never contain localhost. See lib/server/turnstile.ts.
    */
   TURNSTILE_HOSTNAMES?: string;

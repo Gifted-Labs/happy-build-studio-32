@@ -57,7 +57,12 @@
    * RESEND_API_KEY — are set with `wrangler secret put` and never live here.
    */
   "vars": {
-    // Must be a Resend-verified sender on the lifestory.org domain.
+    /**
+     * NOTE: this sender is on lifestory.org, but the site runs on
+     * lifestorycharitablefoundation.com. Resend only sends from a domain it has
+     * verified, so unless lifestory.org is verified there, every send is
+     * rejected. Confirm which domain is verified before relying on email.
+     */
     "RESEND_FROM": "Life Story Foundation <hello@lifestory.org>",
     // Where submission notifications land; the public address used on /contact.
     "NOTIFY_EMAIL": "contact@lifestory.org",
@@ -76,7 +81,7 @@
      * first deploy, as lifestory-foundation.<subdomain>.workers.dev) if you want
      * the forms to work on that URL before the real domain is attached.
      */
-    "TURNSTILE_HOSTNAMES": "lifestory.org,www.lifestory.org"
+    "TURNSTILE_HOSTNAMES": "lifestorycharitablefoundation.com,www.lifestorycharitablefoundation.com"
   },
 
   // Form submissions are the only server-side path, so sample every request —

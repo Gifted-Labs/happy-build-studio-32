@@ -116,7 +116,7 @@ magick input.jpg -auto-orient -strip -resize '2400x2400>' -quality 86 output.jpg
 
 > [!IMPORTANT]
 > `VITE_IMAGE_TRANSFORM` is set to `false`, and must stay that way until
-> `lifestory.org` is attached. `cfImage()` builds a **relative** `/cdn-cgi/image/`
+> `lifestorycharitablefoundation.com` is attached. `cfImage()` builds a **relative** `/cdn-cgi/image/`
 > URL, which is served by the Cloudflare zone hosting the site — it does not exist
 > on `*.workers.dev`. Turning transforms on before the domain is attached makes
 > every image 404. Once the zone is live, enable Image Transformations on it and

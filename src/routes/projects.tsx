@@ -8,7 +8,7 @@ import {
 } from "../components/site/page-shell";
 import { projects } from "../data/projects";
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestory.org").replace(/\/$/, "");
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com").replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects")({
   head: () => ({

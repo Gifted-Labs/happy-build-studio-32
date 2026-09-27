@@ -1,29 +1,28 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Icon } from "./motion";
+import { ResponsiveImage } from "../site/responsive-image";
+import { SiteLink } from "../site/site-link";
+import { NewsletterForm } from "../forms/newsletter-form";
+import type { MediaKey } from "../../lib/media";
 
+/**
+ * Named slots this layout uses, resolved against the manifest in lib/media.ts.
+ * Swapping a photograph means changing the manifest, not this file.
+ */
 const images = {
-  hero: "https://lh3.googleusercontent.com/aida-public/AB6AXuCUiZedOspvoax75aOqwYEAFd9x4ocwb3duusyDUWcEc_LY_BBnxV_-jppwffBln-IGF7JMwIEsoRQihY23Ad3czGWNXu6gLBpjvXB9z-Z8uzhQzCPUSqKj09peffHRsseDD0M5O3DzZS4Dm7zIyxeun3EtiwkoSARW_Fg8VY8jbBACqcLc6Je1lyk4si_l_rEgbgN2TRCgVYJXXwsxESfXIztIvGahChHAOKE7JZs9TDQlXlQZ-O3ZuQ",
-  about:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDkqkr_eKhXcFCdoH3DL7SSr3LLJXp5te4_ow7xkXTaxbWVwohdyEeQ18KUTB-Y8TSbP_5osvgFJNld0KVlFWNNbF-JzuZAhEcIbYztAXEfDEDdJRp7NpzSJhw5RshMLB6VYEvFM_9p3Dr1mgGziRDJdBeq6AAbOtkdxgjmwBe8richKMGU2Zej-nUO2i8tz5cZy5EVZo5lkYDnVbSwIo2gILCIRr5xg-dahMfct0xvuoLxpn64-lWIMQ",
-  community:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDK-DRJPTtY8fZkl0-2Z9ovuJDoGVFhHIvc9FyZ1ZqbZwbSL0051U1OUVlLXeSACe9_vo1TaHrNF0cOBGCyARZj8LR-SxO6NuZpOMr9ukhzu57HqTLcoENPYSFuCTaBLSFMCxTZIAY7b6t2Tin7M-mTd-9rBDBPfaSr6ogJVK52RoXJM-4VnLH7w7wQI_NXw1_1-A2x0Ps1sNpUf1jKbtYifC1CHUp_aHCK4mwtgJn7I0_XwTgr3MmFhA",
-  education:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCA7KQHl5sxpX799eLNbYZ0ev5K0U2uinFh-OXOm9Vc16KJqX106YPdpMJSsHDKk9qjhIZqiCEG0QwQ7ynl2ASmFyOrZ3rexuveWqTwIgYQH1GqOqXkdAVygEz2RVRYHf_Hhd-LNhs-RcL6R1wPe2V49taTew5BzdmHBrYnsdseXutaxUc_0JRF7fbVMsfw7CDR4U1uXGu--xEk750Wjo71A-ZdRBP8hETrduqrOp41HQnUbA59n2oCA",
-  water:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuA0eCmEkDEG_M5aeXAtJ8b1TDiDn3NQSzNwjMNnQHxkpwD53MCIeBKNuXrWiJ0xWtGHqWJiIZLEAnTwCGtkiaQ0kZx7N7H7HiIEcDqtRBuY9f_wee0QfhiOhzwF9qJpq5_ESwaNKn1YmEnSXEZ4ktz2lmrS__h8Av4YWZXyMqCKBLVySwusPYVrbgfTnIz6OGfXvArSCYReMBOq6pbgVeOVydI55-59rZhcfVByfOao-BiuUf3LZNyrdw",
-  health:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCdIYlHU0r1pPf81EGne1bifk3SMmVrYQOfRbKmtRqkSbZ1GyPvsBn49fLI2ZBD_-FVHvkufatDS70uiW8IHdRX-pi3diGpKTzxoQwywAzg-Tevhl9TcpSbx_LZAkR4wke_LxE-Wbzvy-rakc5I1OPaQ4vgM15RV1LEj8CuyEptbXlv06_eshvhhCbfZN_mWIsLbwVvu4PKvFn423gqVg86musB_mLljAcuoyBDA_rZfjK5WktRz7l5A",
-  news1:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCrPnPr3180x9otLK7KATn1aA4MIYNTBkuXnqF5BXUY0ch3HtXHRIUNGw3uthQWh3apMzN0vFHvN1ZNAzIzbYvQXcqH3aEmDR7tdHI_nNF39yhiDSJByTpUaT7WgPt3jJn8i0yCfuBTLY4rn5E3AFaWYTxMoOWvdoZ-0d-zDbDwZJIFRPriaeP1cHdAcJhrzb-Zww5tadS9ZmIGlbZ2PyfSTWzMpKEVka6Sl_jiIaD93rsOZD-Za-Ag2g",
-  news2:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuALqinUzqYCOxqFynwS9hKbbMPPQu3LHvmzIgT8kMLVbBcou0GhwhWHg7rl8MsLo-7ZHd197ZliLYLf40K_qi-p6ETPeYaiYauWOwDEvgaGQvwEfGy9aTEHUZGYJCWHhFDrVELN2qBkvpFSdHg5mh1DuTOa4JjOBKXCdgxSZA2ihCjkwUZ_XAXQ3WiBEBD2wTK-sggXWEoTw1PXgae0wFJlfdJR4zTohXjaqtQwQ3Tu94HbJ-WVyYXyRA",
-  news3:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBaIVrTzUS7XK2lifzCg3gKVubYIgHHMCwsKIQ2mdIJ2fS-dvvXC3lbhBPpEgL3YlqWDWP4NgF8nAc6M1qoz2maJXm2vyF2Pu8CgAkieyyyxrXlnMLkTxYI8AzzhdMcyWB8Pow0mVake7LhUg1i2FIF3rPwKBi2Q8XsiMH-qLFH1KPI0eZvdPSd-QMcvL9egBPJaiiuDVAyL15weQIWI5Ys6D_wSzvZVi8ff67cGxwsVtYl63SXCoAlMw",
-  portrait:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBoPaOmA2ZZb_-Mu-pHCyKK_KAAhGeddqDJgeffhM9xKTZVXJJO1DDsvayRmlXkfrA9Ljn5R2-8YZfEq5dj-iyVTG9apF_CXmUR0cEt8xDFRactSSisfURUbPELvFx6mUbxl8cp1Bj_OOkecidaWf2bVdSq1-cdk7oAOpm1coirYHa84u2eGDRFqV9INN7vkn80KzzgYAxLkoyZS7Ofw_ZlBMcuFYnL-pSlw5P4txjU6vHegdVYIu_VRA",
-  landscape:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuA2T-BIPmm9vR1mFOCYv0F4f7tWZgI3hPQK-r-4nSj6H5UKLwedKGVub514pTo5jEbyFBQYMtw4i-3kEPQ8zQqUBECGR4f4aQe7tgN_fxmVhN3vXj33cZkzUs0KMnUCHXrNKsJV3WoAGzb_Ob49WOnSzkEYBYtmRweAlsrww6KLkql3CcVUcOI7-zpsWRQAJxfjN3NGk_5y8-ohDI0Trb4q9ZxZAzPnS8NMotI5w9E3iO6ZMfhlChhMzA",
-};
+  hero: "hero",
+  about: "about",
+  community: "community",
+  education: "education",
+  water: "water",
+  health: "health",
+  news1: "news1",
+  news2: "news2",
+  news3: "news3",
+  portrait: "portrait",
+  landscape: "landscape",
+} satisfies Record<string, MediaKey>;
 
 const navigation = [
   ["Home", "/"],
@@ -49,7 +48,7 @@ export function SectionLabel({ children, dark = false }: { children: string; dar
 
 export function ActionLink({ href, children }: { href: string; children: string }) {
   return (
-    <a
+    <SiteLink
       href={href}
       className="inline-flex min-h-11 items-center gap-3 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-800"
     >
@@ -57,7 +56,7 @@ export function ActionLink({ href, children }: { href: string; children: string 
       <span className="grid h-7 w-7 place-items-center rounded-sm bg-white text-navy-900">
         <Icon name="arrow_outward" className="text-[17px]" />
       </span>
-    </a>
+    </SiteLink>
   );
 }
 
@@ -85,7 +84,7 @@ export function LandingNav() {
       }`}
     >
       <div className="mx-auto flex h-full max-w-max-width items-center justify-between px-5 md:px-7">
-        <a href="/" className="flex items-center gap-2">
+        <SiteLink href="/" className="flex items-center gap-2">
           <img
             src="/life-story-bird-white.png"
             alt=""
@@ -97,16 +96,16 @@ export function LandingNav() {
             <strong className="block font-display text-base">Life Story</strong>
             <span className="mt-1 block text-[0.625rem] font-semibold">Foundation</span>
           </span>
-        </a>
+        </SiteLink>
         <div className="hidden items-center gap-7 md:flex">
           {navigation.map(([label, href]) => (
-            <a
+            <SiteLink
               key={label}
               href={href}
               className="text-sm font-medium text-white/80 hover:text-brand-mint"
             >
               {label}
-            </a>
+            </SiteLink>
           ))}
         </div>
         <div className="flex items-center gap-2">
@@ -120,12 +119,12 @@ export function LandingNav() {
           >
             <Icon name={menuOpen ? "close" : "menu"} className="text-[24px]" />
           </button>
-          <a
+          <SiteLink
             href="/donate"
             className="inline-flex h-11 items-center gap-2 rounded-md bg-brand-mint px-4 text-sm font-semibold text-ink-900"
           >
             Donate <Icon name="arrow_outward" className="text-[18px]" />
-          </a>
+          </SiteLink>
         </div>
       </div>
       {menuOpen ? (
@@ -134,14 +133,14 @@ export function LandingNav() {
           className="absolute inset-x-0 top-full mt-2 overflow-hidden rounded-lg border border-white/10 bg-navy-900 p-2 shadow-2xl md:hidden"
         >
           {navigation.map(([label, href]) => (
-            <a
+            <SiteLink
               key={label}
               href={href}
               onClick={() => setMenuOpen(false)}
               className="flex min-h-12 items-center rounded-md px-4 text-sm font-semibold text-white/85 transition-colors hover:bg-white/10 hover:text-brand-mint"
             >
               {label}
-            </a>
+            </SiteLink>
           ))}
         </div>
       ) : null}
@@ -152,9 +151,14 @@ export function LandingNav() {
 function Hero() {
   return (
     <section className="relative flex h-[clamp(680px,92svh,820px)] min-h-[680px] items-end overflow-hidden bg-navy-900 text-white">
-      <img
+      <ResponsiveImage
         src={images.hero}
         alt="Children learning together"
+        width={2000}
+        height={1200}
+        sizes="100vw"
+        priority
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-[linear-gradient(90deg,oklch(0.22_0.08_254/0.92)_0%,oklch(0.22_0.08_254/0.68)_35%,oklch(0.22_0.08_254/0.1)_72%)]" />
@@ -163,10 +167,13 @@ function Hero() {
           <div className="mb-5 inline-flex items-center gap-3 rounded-full bg-white/10 px-3 py-2 text-sm backdrop-blur-md">
             <div className="flex -space-x-2">
               {[images.portrait, images.about, images.community].map((src) => (
-                <img
+                <ResponsiveImage
                   key={src}
                   src={src}
                   alt=""
+                  width={56}
+                  height={56}
+                  fit="cover"
                   className="h-7 w-7 rounded-full border-2 border-white object-cover"
                 />
               ))}
@@ -185,12 +192,12 @@ function Hero() {
           <div className="border-l border-white/25 pl-6">
             <div className="mb-4 text-xl font-bold">4.9/5</div>
             <p className="font-semibold">Trusted by donors and community partners</p>
-            <a
+            <SiteLink
               href="/donate"
               className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-mint"
             >
               Support our work <Icon name="arrow_forward" className="text-[18px]" />
-            </a>
+            </SiteLink>
           </div>
         </div>
       </div>
@@ -203,19 +210,31 @@ function AboutCollage() {
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[560px] w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={images.about}
             alt="Community volunteer"
+            width={666}
+            height={760}
+            sizes="(min-width: 1024px) 333px, 64vw"
+            fit="cover"
             className="absolute left-[13%] top-[8%] h-[380px] w-[64%] rounded-lg object-cover shadow-xl"
           />
-          <img
+          <ResponsiveImage
             src={images.community}
             alt="Community gathering"
+            width={448}
+            height={440}
+            sizes="(min-width: 1024px) 224px, 43vw"
+            fit="cover"
             className="absolute right-0 top-0 h-[220px] w-[43%] rounded-lg border-4 border-surface-page object-cover"
           />
-          <img
+          <ResponsiveImage
             src={images.education}
             alt="Education program"
+            width={448}
+            height={500}
+            sizes="(min-width: 1024px) 224px, 43vw"
+            fit="cover"
             className="absolute bottom-0 left-0 h-[250px] w-[43%] rounded-lg border-4 border-surface-page object-cover shadow-lg"
           />
         </div>
@@ -258,9 +277,12 @@ function AboutCollage() {
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <ActionLink href="/about">More About Us</ActionLink>
             <div className="flex items-center gap-3">
-              <img
+              <ResponsiveImage
                 src={images.portrait}
                 alt="Foundation director"
+                width={88}
+                height={88}
+                fit="cover"
                 className="h-11 w-11 rounded-full object-cover"
               />
               <div>
@@ -329,22 +351,25 @@ function ServicesMatrix() {
                 </span>
                 <h3 className="font-display text-lg text-navy-900">{title}</h3>
                 <p className="mt-3 max-w-sm text-sm leading-6 text-on-surface-variant">{body}</p>
-                <a
+                <SiteLink
                   href="/projects"
                   className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-navy-900"
                 >
                   Read more <Icon name="arrow_outward" className="text-[16px]" />
-                </a>
+                </SiteLink>
               </article>
             ))}
           </div>
           <aside className="relative flex min-h-[460px] flex-col items-center justify-center overflow-hidden rounded-lg bg-navy-900 p-8 text-center text-white">
             <div className="flex -space-x-2">
               {[images.portrait, images.about, images.community, images.education].map((src) => (
-                <img
+                <ResponsiveImage
                   key={src}
                   src={src}
                   alt=""
+                  width={80}
+                  height={80}
+                  fit="cover"
                   className="h-10 w-10 rounded-full border-2 border-navy-900 object-cover"
                 />
               ))}
@@ -354,12 +379,12 @@ function ServicesMatrix() {
             <p className="mt-5 max-w-[230px] font-display text-xl">
               Trusted by communities, volunteers, and donors
             </p>
-            <a
+            <SiteLink
               href="/contact"
               className="mt-8 inline-flex items-center gap-2 rounded-md bg-brand-mint px-5 py-3 font-semibold text-ink-900"
             >
               Contact us <Icon name="arrow_outward" />
-            </a>
+            </SiteLink>
             <div className="absolute inset-x-0 bottom-0 h-24 bg-primary/20" />
           </aside>
         </div>
@@ -368,9 +393,9 @@ function ServicesMatrix() {
             <Icon name="call" className="text-[16px]" />
           </span>
           Let us build meaningful work together.{" "}
-          <a href="/contact" className="font-semibold text-primary underline">
+          <SiteLink href="/contact" className="font-semibold text-primary underline">
             Contact the team
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -382,18 +407,26 @@ function ImpactSplit() {
     <section className="bg-surface-muted py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[570px] w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={images.community}
             alt="Child receiving support"
+            width={790}
+            height={1140}
+            sizes="(min-width: 1024px) 395px, 76vw"
+            fit="cover"
             className="absolute inset-y-0 left-[8%] w-[76%] rounded-lg object-cover"
           />
           <div className="absolute left-0 top-12 rounded-lg bg-white p-5 shadow-xl">
             <strong className="block font-display text-2xl text-navy-900">500+</strong>
             <span className="text-sm text-on-surface-variant">Active volunteers</span>
           </div>
-          <img
+          <ResponsiveImage
             src={images.water}
             alt="Community project"
+            width={436}
+            height={420}
+            sizes="(min-width: 1024px) 218px, 42vw"
+            fit="cover"
             className="absolute bottom-8 right-0 h-[210px] w-[42%] rounded-lg border-4 border-surface-muted object-cover"
           />
         </div>
@@ -423,9 +456,13 @@ function ImpactSplit() {
                 </div>
               ))}
             </div>
-            <img
+            <ResponsiveImage
               src={images.education}
               alt="Children in a supported community"
+              width={600}
+              height={440}
+              sizes="(min-width: 1024px) 300px, 50vw"
+              fit="cover"
               className="h-full min-h-[220px] w-full object-cover"
             />
           </div>
@@ -441,9 +478,13 @@ function ImpactSplit() {
 function StoryBand() {
   return (
     <section className="relative flex h-[560px] items-center justify-center overflow-hidden text-center text-white">
-      <img
+      <ResponsiveImage
         src={images.landscape}
         alt="Ghana landscape"
+        width={2000}
+        height={1120}
+        sizes="100vw"
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-navy-900/75" />
@@ -454,13 +495,13 @@ function StoryBand() {
           Collective support from donors, volunteers, and partners provides opportunity and dignity
           to communities.
         </p>
-        <a
+        <SiteLink
           href="/about"
           aria-label="Read our story"
           className="mx-auto mt-16 grid h-20 w-20 place-items-center rounded-full bg-brand-mint text-ink-900 shadow-xl"
         >
           <Icon name="play_arrow" filled className="text-[30px]" />
-        </a>
+        </SiteLink>
       </div>
     </section>
   );
@@ -501,9 +542,13 @@ function CauseGallery() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {causes.map(([image, category, title, href]) => (
             <article key={title} className="group relative aspect-[4/5] overflow-hidden rounded-lg">
-              <img
+              <ResponsiveImage
                 src={image}
                 alt=""
+                width={800}
+                height={1000}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/10 to-transparent" />
@@ -512,21 +557,21 @@ function CauseGallery() {
                   {category}
                 </span>
                 <h3 className="mt-6 font-display text-xl">{title}</h3>
-                <a
+                <SiteLink
                   href={href}
                   className="mt-5 flex items-center justify-between border-t border-white/25 pt-4 text-sm font-semibold"
                 >
                   Read more <Icon name="arrow_outward" />
-                </a>
+                </SiteLink>
               </div>
             </article>
           ))}
         </div>
         <div className="mt-10 text-center text-sm text-on-surface-variant">
           Find the cause that speaks to you.{" "}
-          <a href="/projects" className="font-semibold text-primary underline">
+          <SiteLink href="/projects" className="font-semibold text-primary underline">
             Explore all projects
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -619,18 +664,26 @@ function Programs() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {cards.map(([image, category, title, href]) => (
             <article key={title} className="overflow-hidden rounded-lg bg-white p-2 shadow-sm">
-              <img src={image} alt="" className="aspect-[4/3] w-full rounded-md object-cover" />
+              <ResponsiveImage
+                src={image}
+                alt=""
+                width={800}
+                height={600}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
+                className="aspect-[4/3] w-full rounded-md object-cover"
+              />
               <div className="p-5">
                 <div className="flex items-center gap-2 text-sm text-on-surface-variant">
                   <Icon name="location_city" className="text-[18px]" /> {category}
                 </div>
                 <h3 className="mt-4 min-h-[58px] font-display text-lg text-navy-900">{title}</h3>
-                <a
+                <SiteLink
                   href={href}
                   className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm font-semibold text-navy-900"
                 >
                   Read more <Icon name="arrow_outward" />
-                </a>
+                </SiteLink>
               </div>
             </article>
           ))}
@@ -703,12 +756,12 @@ function DonationSection() {
               aria-label="Custom donation amount"
               className="mt-4 h-12 w-full rounded-md border border-input px-4 text-center outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
             />
-            <a
+            <SiteLink
               href={`/donate?amount=${amount}`}
               className="mt-6 block rounded-md bg-primary px-6 py-4 text-center font-semibold text-white"
             >
               Donate now
-            </a>
+            </SiteLink>
             <div className="mt-4 flex items-center justify-center gap-2 text-xs text-on-surface-variant">
               <Icon name="lock" className="text-[15px]" /> Secure donation enquiry
             </div>
@@ -747,9 +800,13 @@ function FaqSection() {
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={images.about}
             alt="Community support"
+            width={854}
+            height={1068}
+            sizes="(min-width: 1024px) 427px, 82vw"
+            fit="cover"
             className="aspect-[4/5] w-[82%] rounded-lg object-cover"
           />
           <div className="absolute bottom-8 right-0 w-[230px] rounded-lg bg-navy-900 p-6 text-white shadow-xl">
@@ -798,9 +855,13 @@ function FaqSection() {
 function TestimonialBand() {
   return (
     <section className="relative min-h-[600px] overflow-hidden py-24 text-white">
-      <img
+      <ResponsiveImage
         src={images.hero}
         alt="Community volunteers"
+        width={2000}
+        height={1200}
+        sizes="100vw"
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-navy-900/70" />
@@ -809,10 +870,13 @@ function TestimonialBand() {
           <div className="mb-5 inline-flex items-center gap-3 rounded-full bg-white/10 px-3 py-2 text-sm">
             <div className="flex -space-x-2">
               {[images.portrait, images.about, images.community].map((src) => (
-                <img
+                <ResponsiveImage
                   key={src}
                   src={src}
                   alt=""
+                  width={56}
+                  height={56}
+                  fit="cover"
                   className="h-7 w-7 rounded-full border-2 border-white object-cover"
                 />
               ))}
@@ -828,9 +892,12 @@ function TestimonialBand() {
             commitment to communities gives me confidence in every contribution.
           </p>
           <div className="mt-12 flex items-center gap-3 border-t border-border pt-6">
-            <img
+            <ResponsiveImage
               src={images.portrait}
               alt="Kojo Boateng"
+              width={88}
+              height={88}
+              fit="cover"
               className="h-11 w-11 rounded-full object-cover"
             />
             <div>
@@ -881,14 +948,18 @@ function Stories() {
         </div>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {stories.map(([image, date, title, href]) => (
-            <a
+            <SiteLink
               key={title}
               href={href}
               className="group relative aspect-[4/5] overflow-hidden rounded-lg"
             >
-              <img
+              <ResponsiveImage
                 src={image}
                 alt=""
+                width={800}
+                height={1000}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent" />
@@ -898,7 +969,7 @@ function Stories() {
                 </div>
                 <h3 className="mt-4 font-display text-xl">{title}</h3>
               </div>
-            </a>
+            </SiteLink>
           ))}
         </div>
       </div>
@@ -911,7 +982,7 @@ export function LandingFooter() {
     <footer className="bg-navy-900 py-16 text-white/70">
       <div className="mx-auto max-w-max-width px-6">
         <div className="flex flex-col justify-between gap-8 border-b border-white/15 pb-10 md:flex-row md:items-center">
-          <a href="/" className="flex items-center gap-3">
+          <SiteLink href="/" className="flex items-center gap-3">
             <img
               src="/life-story-bird-white.png"
               alt=""
@@ -920,7 +991,7 @@ export function LandingFooter() {
               className="h-12 w-auto"
             />
             <span className="font-display text-xl uppercase text-white">Life Story Foundation</span>
-          </a>
+          </SiteLink>
           <div className="flex items-center gap-4">
             <span className="font-semibold text-white">Follow our work</span>
             {["public", "share", "mail"].map((icon) => (
@@ -939,9 +1010,9 @@ export function LandingFooter() {
             <ul className="mt-5 space-y-3 text-sm">
               {navigation.map(([label, href]) => (
                 <li key={label}>
-                  <a href={href} className="hover:text-brand-mint">
+                  <SiteLink href={href} className="hover:text-brand-mint">
                     {label}
-                  </a>
+                  </SiteLink>
                 </li>
               ))}
             </ul>
@@ -950,16 +1021,16 @@ export function LandingFooter() {
             <h3 className="font-display text-lg text-white">Our Projects</h3>
             <ul className="mt-5 space-y-3 text-sm">
               <li>
-                <a href="/projects#education">Education support</a>
+                <SiteLink href="/projects#education">Education support</SiteLink>
               </li>
               <li>
-                <a href="/projects#healthcare">Community healthcare</a>
+                <SiteLink href="/projects#healthcare">Community healthcare</SiteLink>
               </li>
               <li>
-                <a href="/projects#clean-water">Clean water access</a>
+                <SiteLink href="/projects#clean-water">Clean water access</SiteLink>
               </li>
               <li>
-                <a href="/projects#community">Community support</a>
+                <SiteLink href="/projects#community">Community support</SiteLink>
               </li>
             </ul>
           </div>
@@ -967,41 +1038,23 @@ export function LandingFooter() {
             <h3 className="font-display text-lg text-white">Get Involved</h3>
             <ul className="mt-5 space-y-3 text-sm">
               <li>
-                <a href="/get-involved#volunteer">Volunteer</a>
+                <SiteLink href="/get-involved#volunteer">Volunteer</SiteLink>
               </li>
               <li>
-                <a href="/get-involved#partner">Partner</a>
+                <SiteLink href="/get-involved#partner">Partner</SiteLink>
               </li>
               <li>
-                <a href="/get-involved#fundraise">Fundraise</a>
+                <SiteLink href="/get-involved#fundraise">Fundraise</SiteLink>
               </li>
               <li>
-                <a href="/donate">Monthly giving</a>
+                <SiteLink href="/donate">Monthly giving</SiteLink>
               </li>
             </ul>
           </div>
           <div>
             <h3 className="font-display text-lg text-white">Stay Connected</h3>
             <p className="mt-5 text-sm leading-6">Receive project updates and community stories.</p>
-            <form
-              action="mailto:contact@lifestory.org"
-              className="mt-5 flex border-b border-white/25 pb-2"
-            >
-              <input
-                type="email"
-                required
-                aria-label="Email address"
-                placeholder="Email address"
-                className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/40"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="grid h-9 w-9 place-items-center rounded-md bg-brand-mint text-ink-900"
-              >
-                <Icon name="arrow_forward" className="text-[17px]" />
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
         <div className="border-t border-white/15 pt-8 text-center text-sm">

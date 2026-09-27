@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ActionBand, InfoGrid, PageShell, siteImages } from "../components/site/page-shell";
 import { Icon } from "../components/landing/motion";
 import { SectionLabel } from "../components/landing/reference-layout";
+import { DonationForm } from "../components/forms/donation-form";
 
 export const Route = createFileRoute("/donate")({
   validateSearch: (search: Record<string, unknown>) => {
@@ -45,57 +46,7 @@ function DonatePage() {
               ))}
             </div>
           </div>
-          <form
-            action="mailto:contact@lifestory.org"
-            method="post"
-            encType="text/plain"
-            className="space-y-5 rounded-lg bg-navy-900 p-6 text-white shadow-2xl md:p-8"
-          >
-            <span className="grid h-12 w-12 place-items-center rounded-full bg-brand-mint text-ink-900">
-              <Icon name="volunteer_activism" className="text-[22px]" />
-            </span>
-            <h2 className="font-display text-h3">Donation enquiry</h2>
-            <label className="block text-sm font-semibold">
-              Amount in Ghana cedis
-              <input
-                required
-                type="number"
-                min="1"
-                name="amount"
-                placeholder="50"
-                defaultValue={amount}
-                className="mt-2 h-12 w-full rounded-md border border-white/20 bg-white/10 px-4 font-normal outline-none placeholder:text-white/50 focus:border-gold-500 focus:ring-4 focus:ring-gold-500/15"
-              />
-            </label>
-            <label className="block text-sm font-semibold">
-              Full name
-              <input
-                required
-                name="name"
-                autoComplete="name"
-                className="mt-2 h-12 w-full rounded-md border border-white/20 bg-white/10 px-4 font-normal outline-none focus:border-gold-500 focus:ring-4 focus:ring-gold-500/15"
-              />
-            </label>
-            <label className="block text-sm font-semibold">
-              Email address
-              <input
-                required
-                type="email"
-                name="email"
-                autoComplete="email"
-                className="mt-2 h-12 w-full rounded-md border border-white/20 bg-white/10 px-4 font-normal outline-none focus:border-gold-500 focus:ring-4 focus:ring-gold-500/15"
-              />
-            </label>
-            <button
-              type="submit"
-              className="w-full rounded-md bg-brand-mint px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-white"
-            >
-              Contact the Donation Team
-            </button>
-            <p className="text-center text-body-sm text-white/60">
-              Our team will reply with the available secure payment options.
-            </p>
-          </form>
+          <DonationForm defaultAmount={amount} />
         </div>
       </section>
       <InfoGrid

@@ -1,28 +1,36 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ActionBand, PageShell, SplitFeature, siteImages } from "../components/site/page-shell";
+import { ResponsiveImage } from "../components/site/responsive-image";
+import type { MediaKey } from "../lib/media";
 import { ActionLink, SectionLabel } from "../components/landing/reference-layout";
 import { Icon } from "../components/landing/motion";
 
 export const Route = createFileRoute("/news")({ component: NewsPage });
 
-const stories = [
+const stories: Array<{
+  id: string;
+  image: MediaKey;
+  date: string;
+  title: string;
+  body: string;
+}> = [
   {
     id: "community-hub",
-    image: siteImages.news,
+    image: "news1",
     date: "October 24, 2024",
     title: "Opening the New Community Hub in Kumasi",
     body: "The new hub gives families a shared place for tutoring, skills workshops, health outreach, and local meetings.",
   },
   {
     id: "digital-divide",
-    image: siteImages.education,
+    image: "news2",
     date: "October 12, 2024",
     title: "Bridging the Digital Divide with 50 New Laptops",
     body: "Students and teachers can now access digital learning resources through a locally managed computer program.",
   },
   {
     id: "volunteer-program",
-    image: siteImages.community,
+    image: "news3",
     date: "September 28, 2024",
     title: "Volunteer Program Applications Are Open",
     body: "Our next volunteer intake supports education, community health, communications, and project coordination.",
@@ -63,9 +71,13 @@ function NewsPage() {
                 key={story.id}
                 className="group relative aspect-[4/5] scroll-mt-24 overflow-hidden rounded-lg"
               >
-                <img
+                <ResponsiveImage
                   src={story.image}
                   alt=""
+                  width={800}
+                  height={1000}
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  fit="cover"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/20 to-transparent" />

@@ -1,26 +1,25 @@
 import type { ReactNode } from "react";
 import { LandingFooter, LandingNav, SectionLabel } from "../landing/reference-layout";
 import { Icon, MotionReveal } from "../landing/motion";
+import { ResponsiveImage } from "./responsive-image";
+import { SiteLink } from "./site-link";
+import type { MediaKey } from "../../lib/media";
 
+/** Slots the interior pages draw on. See lib/media.ts for the manifest. */
 export const siteImages = {
-  about:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDkqkr_eKhXcFCdoH3DL7SSr3LLJXp5te4_ow7xkXTaxbWVwohdyEeQ18KUTB-Y8TSbP_5osvgFJNld0KVlFWNNbF-JzuZAhEcIbYztAXEfDEDdJRp7NpzSJhw5RshMLB6VYEvFM_9p3Dr1mgGziRDJdBeq6AAbOtkdxgjmwBe8richKMGU2Zej-nUO2i8tz5cZy5EVZo5lkYDnVbSwIo2gILCIRr5xg-dahMfct0xvuoLxpn64-lWIMQ",
-  community:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDK-DRJPTtY8fZkl0-2Z9ovuJDoGVFhHIvc9FyZ1ZqbZwbSL0051U1OUVlLXeSACe9_vo1TaHrNF0cOBGCyARZj8LR-SxO6NuZpOMr9ukhzu57HqTLcoENPYSFuCTaBLSFMCxTZIAY7b6t2Tin7M-mTd-9rBDBPfaSr6ogJVK52RoXJM-4VnLH7w7wQI_NXw1_1-A2x0Ps1sNpUf1jKbtYifC1CHUp_aHCK4mwtgJn7I0_XwTgr3MmFhA",
-  education:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCA7KQHl5sxpX799eLNbYZ0ev5K0U2uinFh-OXOm9Vc16KJqX106YPdpMJSsHDKk9qjhIZqiCEG0QwQ7ynl2ASmFyOrZ3rexuveWqTwIgYQH1GqOqXkdAVygEz2RVRYHf_Hhd-LNhs-RcL6R1wPe2V49taTew5BzdmHBrYnsdseXutaxUc_0JRF7fbVMsfw7CDR4U1uXGu--xEk750Wjo71A-ZdRBP8hETrduqrOp41HQnUbA59n2oCA",
-  water:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuA0eCmEkDEG_M5aeXAtJ8b1TDiDn3NQSzNwjMNnQHxkpwD53MCIeBKNuXrWiJ0xWtGHqWJiIZLEAnTwCGtkiaQ0kZx7N7H7HiIEcDqtRBuY9f_wee0QfhiOhzwF9qJpq5_ESwaNKn1YmEnSXEZ4ktz2lmrS__h8Av4YWZXyMqCKBLVySwusPYVrbgfTnIz6OGfXvArSCYReMBOq6pbgVeOVydI55-59rZhcfVByfOao-BiuUf3LZNyrdw",
-  health:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCdIYlHU0r1pPf81EGne1bifk3SMmVrYQOfRbKmtRqkSbZ1GyPvsBn49fLI2ZBD_-FVHvkufatDS70uiW8IHdRX-pi3diGpKTzxoQwywAzg-Tevhl9TcpSbx_LZAkR4wke_LxE-Wbzvy-rakc5I1OPaQ4vgM15RV1LEj8CuyEptbXlv06_eshvhhCbfZN_mWIsLbwVvu4PKvFn423gqVg86musB_mLljAcuoyBDA_rZfjK5WktRz7l5A",
-  news: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrPnPr3180x9otLK7KATn1aA4MIYNTBkuXnqF5BXUY0ch3HtXHRIUNGw3uthQWh3apMzN0vFHvN1ZNAzIzbYvQXcqH3aEmDR7tdHI_nNF39yhiDSJByTpUaT7WgPt3jJn8i0yCfuBTLY4rn5E3AFaWYTxMoOWvdoZ-0d-zDbDwZJIFRPriaeP1cHdAcJhrzb-Zww5tadS9ZmIGlbZ2PyfSTWzMpKEVka6Sl_jiIaD93rsOZD-Za-Ag2g",
-};
+  about: "about",
+  community: "community",
+  education: "education",
+  water: "water",
+  health: "health",
+  news: "news1",
+} satisfies Record<string, MediaKey>;
 
 type PageShellProps = {
   eyebrow: string;
   title: string;
   intro: string;
-  image: string;
+  image: MediaKey;
   children: ReactNode;
 };
 
@@ -30,7 +29,16 @@ export function PageShell({ eyebrow, title, intro, image, children }: PageShellP
       <LandingNav />
       <main>
         <header className="relative flex min-h-[540px] items-end overflow-hidden bg-navy-900 pb-20 pt-32 text-white md:min-h-[620px]">
-          <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <ResponsiveImage
+            src={image}
+            alt=""
+            width={2000}
+            height={1240}
+            sizes="100vw"
+            priority
+            fit="cover"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/55 to-navy-900/5" />
           <MotionReveal className="relative z-10 mx-auto w-full max-w-max-width px-6 motion-enter-up">
             <SectionLabel dark>{eyebrow}</SectionLabel>
@@ -39,9 +47,9 @@ export function PageShell({ eyebrow, title, intro, image, children }: PageShellP
             </h1>
             <p className="mt-6 max-w-2xl text-body text-white/75 md:text-body-lg">{intro}</p>
             <div className="mt-6 flex items-center gap-2 text-sm text-white/70">
-              <a href="/" className="transition-colors hover:text-brand-mint">
+              <SiteLink href="/" className="transition-colors hover:text-brand-mint">
                 Home
-              </a>
+              </SiteLink>
               <Icon name="chevron_right" className="text-[17px]" />
               <span>{eyebrow}</span>
             </div>
@@ -93,12 +101,12 @@ export function InfoGrid({ eyebrow, title, intro, items }: InfoGridProps) {
               <h3 className="mb-3 font-display text-h3 text-navy-900">{item.title}</h3>
               <p className="font-body-sm text-on-surface-variant">{item.body}</p>
               {item.href ? (
-                <a
+                <SiteLink
                   href={item.href}
                   className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
                 >
                   View project <Icon name="arrow_outward" className="text-[17px]" />
-                </a>
+                </SiteLink>
               ) : null}
             </article>
           ))}
@@ -112,7 +120,7 @@ type SplitFeatureProps = {
   eyebrow: string;
   title: string;
   body: string;
-  image: string;
+  image: MediaKey;
   imageAlt: string;
   actionLabel: string;
   actionHref: string;
@@ -131,13 +139,21 @@ export function SplitFeature({
     <section className="bg-surface-muted py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-12 px-6 lg:grid-cols-2">
         <div className="overflow-hidden rounded-lg">
-          <img src={image} alt={imageAlt} className="aspect-[4/3] h-full w-full object-cover" />
+          <ResponsiveImage
+            src={image}
+            alt={imageAlt}
+            width={1200}
+            height={900}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            fit="cover"
+            className="aspect-[4/3] h-full w-full object-cover"
+          />
         </div>
         <div>
           <SectionLabel>{eyebrow}</SectionLabel>
           <h2 className="font-display text-h1 text-navy-900">{title}</h2>
           <p className="my-6 text-body-lg text-on-surface-variant">{body}</p>
-          <a
+          <SiteLink
             href={actionHref}
             className="inline-flex min-h-12 items-center gap-3 rounded-md bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-navy-800"
           >
@@ -145,7 +161,7 @@ export function SplitFeature({
             <span className="grid h-7 w-7 place-items-center rounded-sm bg-white text-navy-900">
               <Icon name="arrow_outward" className="text-[17px]" />
             </span>
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -170,12 +186,12 @@ export function ActionBand({
           <h2 className="font-display text-h1">{title}</h2>
           <p className="mt-3 text-body-lg text-white/70">{body}</p>
         </div>
-        <a
+        <SiteLink
           href={actionHref}
           className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-md bg-brand-mint px-6 py-3 font-semibold text-ink-900 transition-colors hover:bg-white"
         >
           {actionLabel} <Icon name="arrow_outward" />
-        </a>
+        </SiteLink>
       </div>
     </section>
   );

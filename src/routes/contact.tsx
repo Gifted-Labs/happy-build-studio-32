@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ActionBand, InfoGrid, PageShell, siteImages } from "../components/site/page-shell";
 import { Icon } from "../components/landing/motion";
 import { SectionLabel } from "../components/landing/reference-layout";
+import { ContactForm } from "../components/forms/contact-form";
 
 export const Route = createFileRoute("/contact")({ component: ContactPage });
 
@@ -51,55 +52,7 @@ function ContactPage() {
               </div>
             </div>
           </div>
-          <form
-            action="mailto:contact@lifestory.org"
-            method="post"
-            encType="text/plain"
-            className="grid gap-5 rounded-lg bg-white p-6 shadow-xl md:grid-cols-2 md:p-8"
-          >
-            <label className="text-sm font-semibold text-navy-900">
-              Full name
-              <input
-                required
-                name="name"
-                autoComplete="name"
-                className="mt-2 h-12 w-full rounded-md border border-input px-4 font-normal outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-            <label className="text-sm font-semibold text-navy-900">
-              Email address
-              <input
-                required
-                type="email"
-                name="email"
-                autoComplete="email"
-                className="mt-2 h-12 w-full rounded-md border border-input px-4 font-normal outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-            <label className="text-sm font-semibold text-navy-900 md:col-span-2">
-              Subject
-              <input
-                required
-                name="subject"
-                className="mt-2 h-12 w-full rounded-md border border-input px-4 font-normal outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-            <label className="text-sm font-semibold text-navy-900 md:col-span-2">
-              Message
-              <textarea
-                required
-                name="message"
-                rows={6}
-                className="mt-2 w-full resize-y rounded-md border border-input p-4 font-normal outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
-              />
-            </label>
-            <button
-              type="submit"
-              className="inline-flex min-h-12 items-center justify-center gap-3 rounded-md bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-navy-800 md:col-span-2 md:justify-self-start"
-            >
-              Send Message <Icon name="arrow_outward" />
-            </button>
-          </form>
+          <ContactForm />
         </div>
       </section>
       <InfoGrid

@@ -9,8 +9,12 @@ function record(error: unknown) {
 }
 
 if (typeof globalThis.addEventListener === "function") {
-  globalThis.addEventListener("error", (event) => record((event as ErrorEvent).error ?? event));
-  globalThis.addEventListener("unhandledrejection", (event) =>
+  // Params are annotated because @cloudflare/workers-types adds its own
+  // addEventListener overloads, leaving the handler argument uninferred.
+  globalThis.addEventListener("error", (event: Event) =>
+    record((event as ErrorEvent).error ?? event),
+  );
+  globalThis.addEventListener("unhandledrejection", (event: Event) =>
     record((event as PromiseRejectionEvent).reason),
   );
 }

@@ -1,3 +1,5 @@
+import type { MediaKey } from "../lib/media";
+
 export type ProjectOutreach = {
   slug: string;
   shortTitle: string;
@@ -6,354 +8,265 @@ export type ProjectOutreach = {
   date: string;
   location: string;
   status: string;
-  heroImage: string;
-  secondaryImage: string;
+  heroImage: MediaKey;
+  secondaryImage: MediaKey;
   summary: string;
   description: string[];
   metrics: Array<{ icon: string; value: string; label: string }>;
   expectations: Array<{ icon: string; title: string; body: string }>;
   steps: Array<{ title: string; body: string; detail: string }>;
-  gallery: Array<{ src: string; alt: string }>;
+  gallery: Array<{ src: MediaKey; alt: string }>;
   faqs: Array<[string, string]>;
 };
 
-const images = {
-  education:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCA7KQHl5sxpX799eLNbYZ0ev5K0U2uinFh-OXOm9Vc16KJqX106YPdpMJSsHDKk9qjhIZqiCEG0QwQ7ynl2ASmFyOrZ3rexuveWqTwIgYQH1GqOqXkdAVygEz2RVRYHf_Hhd-LNhs-RcL6R1wPe2V49taTew5BzdmHBrYnsdseXutaxUc_0JRF7fbVMsfw7CDR4U1uXGu--xEk750Wjo71A-ZdRBP8hETrduqrOp41HQnUbA59n2oCA",
-  water:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuA0eCmEkDEG_M5aeXAtJ8b1TDiDn3NQSzNwjMNnQHxkpwD53MCIeBKNuXrWiJ0xWtGHqWJiIZLEAnTwCGtkiaQ0kZx7N7H7HiIEcDqtRBuY9f_wee0QfhiOhzwF9qJpq5_ESwaNKn1YmEnSXEZ4ktz2lmrS__h8Av4YWZXyMqCKBLVySwusPYVrbgfTnIz6OGfXvArSCYReMBOq6pbgVeOVydI55-59rZhcfVByfOao-BiuUf3LZNyrdw",
-  health:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuBCdIYlHU0r1pPf81EGne1bifk3SMmVrYQOfRbKmtRqkSbZ1GyPvsBn49fLI2ZBD_-FVHvkufatDS70uiW8IHdRX-pi3diGpKTzxoQwywAzg-Tevhl9TcpSbx_LZAkR4wke_LxE-Wbzvy-rakc5I1OPaQ4vgM15RV1LEj8CuyEptbXlv06_eshvhhCbfZN_mWIsLbwVvu4PKvFn423gqVg86musB_mLljAcuoyBDA_rZfjK5WktRz7l5A",
-  community:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDK-DRJPTtY8fZkl0-2Z9ovuJDoGVFhHIvc9FyZ1ZqbZwbSL0051U1OUVlLXeSACe9_vo1TaHrNF0cOBGCyARZj8LR-SxO6NuZpOMr9ukhzu57HqTLcoENPYSFuCTaBLSFMCxTZIAY7b6t2Tin7M-mTd-9rBDBPfaSr6ogJVK52RoXJM-4VnLH7w7wQI_NXw1_1-A2x0Ps1sNpUf1jKbtYifC1CHUp_aHCK4mwtgJn7I0_XwTgr3MmFhA",
-  about:
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDkqkr_eKhXcFCdoH3DL7SSr3LLJXp5te4_ow7xkXTaxbWVwohdyEeQ18KUTB-Y8TSbP_5osvgFJNld0KVlFWNNbF-JzuZAhEcIbYztAXEfDEDdJRp7NpzSJhw5RshMLB6VYEvFM_9p3Dr1mgGziRDJdBeq6AAbOtkdxgjmwBe8richKMGU2Zej-nUO2i8tz5cZy5EVZo5lkYDnVbSwIo2gILCIRr5xg-dahMfct0xvuoLxpn64-lWIMQ",
-  news: "https://lh3.googleusercontent.com/aida-public/AB6AXuCrPnPr3180x9otLK7KATn1aA4MIYNTBkuXnqF5BXUY0ch3HtXHRIUNGw3uthQWh3apMzN0vFHvN1ZNAzIzbYvQXcqH3aEmDR7tdHI_nNF39yhiDSJByTpUaT7WgPt3jJn8i0yCfuBTLY4rn5E3AFaWYTxMoOWvdoZ-0d-zDbDwZJIFRPriaeP1cHdAcJhrzb-Zww5tadS9ZmIGlbZ2PyfSTWzMpKEVka6Sl_jiIaD93rsOZD-Za-Ag2g",
-};
-
+/**
+ * The foundation's completed outreaches, newest first.
+ *
+ * Every date, place, and figure here comes from the foundation's own account of
+ * the event. Where a project's record gives no number, its `metrics` list is
+ * short or empty rather than padded — an invented figure on a charity's page is
+ * worse than an absent one.
+ */
 export const projects: ProjectOutreach[] = [
   {
-    slug: "education-access",
-    shortTitle: "Education Access Outreach",
-    title: "New Beginnings School Learning Outreach",
+    slug: "krofrom-christmas-outreach",
+    shortTitle: "Krofrom Christmas Outreach",
+    title: "Christmas at Krofrom: Sharing a Festive Meal",
+    category: "Community",
+    date: "December 25, 2025",
+    location: "Krofrom, Kumasi",
+    status: "Completed",
+    heroImage: "krofrom-christmas-outreach/hero",
+    secondaryImage: "krofrom-christmas-outreach/secondary",
+    summary:
+      "A Christmas Day meal shared with people living with drug and substance addiction, serving over 100 plates of food and drinks.",
+    description: [
+      "On Christmas Day 2025, the Life Story Foundation spent the season at Krofrom in Kumasi with people who are struggling with drug and substance addiction — a group too often left out of the celebrations happening around them.",
+      "The Foundation believes in treating everyone with respect and compassion, and in extending help to all who reach out. It was a joyful occasion: over 100 plates of food and drinks were served, and love and cheer were shared at every table.",
+    ],
+    metrics: [{ icon: "restaurant", value: "100+", label: "Plates of food and drinks served" }],
+    expectations: [
+      {
+        icon: "volunteer_activism",
+        title: "Dignity first",
+        body: "Everyone who came was received with respect, without conditions attached to sitting down and eating.",
+      },
+      {
+        icon: "diversity_3",
+        title: "A shared table",
+        body: "Volunteers ate alongside guests rather than serving from a distance, so the day felt like a celebration rather than a handout.",
+      },
+    ],
+    steps: [
+      {
+        title: "Meeting the community",
+        body: "The Foundation went to Krofrom rather than asking people to travel.",
+        detail:
+          "Holding the meal where people already are removes the barrier that keeps many from attending.",
+      },
+      {
+        title: "Preparing and serving",
+        body: "Food and drinks were prepared for the day and served to everyone who came.",
+        detail: "Over 100 plates went out across the celebration.",
+      },
+      {
+        title: "Staying for the day",
+        body: "Volunteers remained through the meal, sharing the occasion with those who attended.",
+        detail: "The aim was company, not just catering.",
+      },
+    ],
+    gallery: [
+      {
+        src: "krofrom-christmas-outreach/01",
+        alt: "Foundation volunteers and community members gathered together at the Krofrom outreach",
+      },
+      {
+        src: "krofrom-christmas-outreach/02",
+        alt: "Volunteers and guests seated together during the Christmas celebration",
+      },
+      {
+        src: "krofrom-christmas-outreach/03",
+        alt: "The gathering seated in front of the Giving Back to Society banner",
+      },
+      {
+        src: "krofrom-christmas-outreach/04",
+        alt: "Guests seated at a table with drinks during the festive meal",
+      },
+      {
+        src: "krofrom-christmas-outreach/05",
+        alt: "A Life Story Foundation volunteer with a member of the Krofrom community",
+      },
+    ],
+    faqs: [
+      [
+        "Where and when did this outreach take place?",
+        "At Krofrom in Kumasi, on Christmas Day — December 25, 2025.",
+      ],
+      [
+        "Who did the Foundation serve?",
+        "Individuals living with drug and substance addiction. The Foundation aims to extend help and show love to all who reach out to us, and this outreach was part of that commitment.",
+      ],
+      [
+        "How much food was provided?",
+        "Over 100 plates of food and drinks were served across the day.",
+      ],
+    ],
+  },
+  {
+    slug: "books-and-pens",
+    shortTitle: "Books & Pens Donation",
+    title: "Books and Pens for Breman M/A Basic School",
     category: "Education",
-    date: "July 20, 2026",
-    location: "Kumasi, Ashanti Region",
+    date: "December 12, 2022",
+    location: "Breman M/A Basic School, Kumasi",
     status: "Completed",
-    heroImage: images.education,
-    secondaryImage: images.about,
+    heroImage: "books-and-pens/hero",
+    secondaryImage: "books-and-pens/secondary",
     summary:
-      "A practical learning outreach providing materials, mentoring, and digital-skills sessions for students at New Beginnings School.",
+      "Exercise books and pens donated to over 200 pupils at Breman M/A Basic School in Kumasi, to support their learning.",
     description: [
-      "This outreach was designed with teachers and community leaders to address immediate learning-resource gaps while giving students access to encouragement, mentoring, and practical digital skills.",
-      "Alongside the distribution of learning materials, volunteers led small-group sessions focused on study habits, confidence, creative problem-solving, and pathways into further education. Teachers also received reusable classroom resources for continued use after the outreach.",
+      "On December 12, 2022, the Life Story Charitable Foundation visited Breman M/A Basic School in Kumasi with exercise books and pens for the pupils.",
+      "Over two hundred pupils received materials that day. The donation was made with love, to enhance their learning and to ease one of the practical costs that can stand between a child and their schoolwork.",
     ],
     metrics: [
-      { icon: "school", value: "185", label: "Students reached" },
-      { icon: "menu_book", value: "420", label: "Learning kits supplied" },
-      { icon: "diversity_3", value: "18", label: "Volunteer mentors" },
-      { icon: "co_present", value: "6", label: "Skills workshops" },
+      { icon: "school", value: "200+", label: "Pupils reached" },
+      { icon: "menu_book", value: "Books & pens", label: "Materials donated" },
     ],
     expectations: [
       {
-        icon: "record_voice_over",
-        title: "Mentoring and learning support",
-        body: "Students work in small groups with volunteers on confidence, study skills, and future pathways.",
+        icon: "menu_book",
+        title: "Materials that get used",
+        body: "Exercise books and pens are what pupils need daily, and what families most often have to find money for.",
       },
       {
-        icon: "devices",
-        title: "Practical digital sessions",
-        body: "Age-appropriate digital literacy activities introduce useful tools and responsible technology habits.",
+        icon: "groups",
+        title: "Handed over in person",
+        body: "Volunteers distributed the materials to pupils directly at the school.",
       },
     ],
     steps: [
       {
-        title: "Identify learning priorities",
-        body: "Teachers and local leaders identify the most urgent material and learning-support gaps.",
+        title: "Working with the school",
+        body: "The Foundation arranged the visit with Breman M/A Basic School.",
         detail:
-          "The team reviews class sizes, available resources, age groups, and the subjects where additional support can make the greatest practical difference.",
+          "Going through the school keeps distribution orderly and reaches the pupils who are enrolled.",
       },
       {
-        title: "Prepare and deliver the outreach",
-        body: "Materials, facilitators, and workshop plans are matched to the school timetable.",
-        detail:
-          "Volunteers receive role assignments and safeguarding guidance before supporting distribution, mentoring, and facilitated learning activities.",
+        title: "Preparing the materials",
+        body: "Exercise books and pens were gathered and packed ahead of the visit.",
+        detail: "Enough was prepared to reach more than two hundred pupils.",
       },
       {
-        title: "Review learning outcomes",
-        body: "Teacher feedback and participation records guide follow-up support.",
-        detail:
-          "The foundation documents resources delivered, participation, teacher observations, and recommendations for the next school engagement.",
+        title: "Distribution day",
+        body: "Volunteers handed materials to pupils across the school on December 12, 2022.",
+        detail: "Pupils received their books and pens directly.",
       },
     ],
     gallery: [
-      { src: images.education, alt: "Students receiving learning materials" },
-      { src: images.about, alt: "A mentoring conversation during the outreach" },
-      { src: images.community, alt: "Volunteers supporting a community session" },
-      { src: images.news, alt: "Community members gathered at a program venue" },
-      { src: images.health, alt: "A facilitator speaking with a parent and child" },
+      {
+        src: "books-and-pens/01",
+        alt: "Pupils at Breman M/A Basic School holding up their new exercise books",
+      },
+      {
+        src: "books-and-pens/02",
+        alt: "A volunteer handing exercise books to a pupil during the distribution",
+      },
+      { src: "books-and-pens/03", alt: "Pupils smiling with the exercise books they received" },
+      { src: "books-and-pens/04", alt: "Schoolchildren displaying their donated exercise books" },
+      { src: "books-and-pens/05", alt: "Stacks of exercise books prepared for distribution" },
     ],
     faqs: [
       [
-        "Can I donate learning materials to this project?",
-        "Yes. Contact the team first so donated materials can be matched to current classroom needs.",
+        "Which school received the donation?",
+        "Breman M/A Basic School in Kumasi, on December 12, 2022.",
       ],
+      ["How many pupils received materials?", "Over two hundred pupils."],
       [
-        "Can education professionals volunteer?",
-        "Yes. Teachers, mentors, facilitators, and digital-skills professionals can register through Get Involved.",
-      ],
-      [
-        "Will the school receive follow-up support?",
-        "Follow-up depends on teacher feedback, program priorities, and available resources after the initial outreach.",
-      ],
-      [
-        "Can I sponsor a future school outreach?",
-        "Yes. The partnership team can prepare a defined sponsorship scope for a future education program.",
+        "What was donated?",
+        "Exercise books and pens, given to support the pupils' day-to-day learning.",
       ],
     ],
   },
   {
-    slug: "clean-water-access",
-    shortTitle: "Clean Water Access",
-    title: "Akwapim Clean Water & Sanitation Outreach",
-    category: "Clean Water",
-    date: "May 18, 2026",
-    location: "Aburi, Eastern Region",
+    slug: "remar-childrens-home",
+    shortTitle: "Remar Children's Home Visit",
+    title: "A Day at Remar Children's Home",
+    category: "Children & Welfare",
+    date: "September 16, 2020",
+    location: "Remar Kumasi Children's Home, Patasi, Kumasi",
     status: "Completed",
-    heroImage: images.water,
-    secondaryImage: images.community,
+    heroImage: "remar-childrens-home/hero",
+    secondaryImage: "remar-childrens-home/secondary",
     summary:
-      "A community-led water and sanitation program combining reliable access points with hygiene education and local maintenance training.",
+      "Foodstuffs and grocery items donated to Remar Kumasi Children's Home in Patasi, on the birthday of the Foundation's founder.",
     description: [
-      "The clean-water outreach brought residents, local leaders, technicians, and volunteers together around a shared goal: safer daily water access supported by practical local knowledge.",
-      "Beyond infrastructure, the project included hygiene sessions, household water-storage guidance, and training for community stewards responsible for reporting faults and coordinating routine maintenance.",
+      "On September 16, 2020, the Life Story Charitable Foundation spent a day at the Remar Kumasi Children's Home in Patasi, Kumasi, donating foodstuffs and grocery items.",
+      "The visit was made alongside Mr. Aboagye Divine, Founder and CEO of Life Story Group, and fell on his birthday — a day he chose to spend sharing love and kindness with the children of the home. In the Foundation's own words, there is no joy or lessons to be learned anywhere quite like the orphanage.",
     ],
-    metrics: [
-      { icon: "water_drop", value: "3", label: "Water points improved" },
-      { icon: "groups", value: "640", label: "Residents reached" },
-      { icon: "engineering", value: "22", label: "Local stewards trained" },
-      { icon: "health_and_safety", value: "8", label: "Hygiene sessions" },
-    ],
+    metrics: [{ icon: "shopping_basket", value: "Foodstuffs & groceries", label: "Donated" }],
     expectations: [
       {
-        icon: "plumbing",
-        title: "Reliable local infrastructure",
-        body: "Technicians assess water points and complete priority improvements with local oversight.",
+        icon: "shopping_basket",
+        title: "Provisions for the home",
+        body: "Foodstuffs and grocery items that go directly into the home's day-to-day running.",
       },
       {
-        icon: "sanitizer",
-        title: "Household hygiene education",
-        body: "Families receive practical guidance on safe storage, sanitation, and protecting shared water sources.",
+        icon: "favorite",
+        title: "Time with the children",
+        body: "The day was spent at the home rather than dropping off supplies and leaving.",
       },
     ],
     steps: [
       {
-        title: "Assess water access and risks",
-        body: "Local usage patterns and infrastructure conditions are documented.",
-        detail:
-          "Community consultations and technical inspections identify reliability, sanitation, and maintenance priorities before work begins.",
+        title: "Arranging the visit",
+        body: "The Foundation arranged the day with Remar Kumasi Children's Home in Patasi.",
+        detail: "Coordinating with the home means the donation matches what it actually needs.",
       },
       {
-        title: "Implement improvements and training",
-        body: "Repairs and education sessions are delivered alongside community stewards.",
-        detail:
-          "Local stewards participate throughout delivery so they understand the system, reporting process, and routine care requirements.",
+        title: "Gathering provisions",
+        body: "Foodstuffs and grocery items were assembled for the home.",
+        detail: "Staples chosen to last beyond the day of the visit.",
       },
       {
-        title: "Monitor reliability",
-        body: "Stewards share maintenance updates and emerging concerns.",
-        detail:
-          "The foundation reviews reported faults, usage feedback, and hygiene-session outcomes to guide future support.",
+        title: "Spending the day",
+        body: "Volunteers handed over the donation and stayed with the children.",
+        detail: "The visit fell on the founder's birthday, September 16, 2020.",
       },
     ],
     gallery: [
-      { src: images.water, alt: "Residents gathering at a clean water point" },
-      { src: images.community, alt: "Community leaders participating in planning" },
-      { src: images.health, alt: "A household health and hygiene session" },
-      { src: images.education, alt: "Young people taking part in an education session" },
-      { src: images.news, alt: "A community gathering during the outreach" },
+      {
+        src: "remar-childrens-home/01",
+        alt: "Children and volunteers together during the visit to Remar Children's Home",
+      },
+      { src: "remar-childrens-home/02", alt: "Children seated with volunteers at the home" },
+      {
+        src: "remar-childrens-home/03",
+        alt: "Children of Remar Kumasi Children's Home during the visit",
+      },
+      {
+        src: "remar-childrens-home/04",
+        alt: "A child at Remar Kumasi Children's Home on the day of the visit",
+      },
+      { src: "remar-childrens-home/05", alt: "Children and volunteers sharing the day together" },
     ],
     faqs: [
       [
-        "Who maintains the water points after the outreach?",
-        "Trained local stewards coordinate routine checks and report technical issues through agreed community channels.",
+        "Where did this visit take place?",
+        "Remar Kumasi Children's Home in Patasi, Kumasi, on September 16, 2020.",
       ],
       [
-        "Does the project include sanitation education?",
-        "Yes. Hygiene, safe storage, sanitation, and protection of shared water sources are core parts of the outreach.",
+        "What was donated?",
+        "Foodstuffs and grocery items from the Life Story Charitable Foundation.",
       ],
       [
-        "Can technical professionals volunteer?",
-        "Yes. Relevant water, engineering, public-health, and training experience can support future programs.",
-      ],
-      [
-        "How can a partner support another community?",
-        "Contact the partnership team to discuss technical scope, funding, equipment, and suitable locations.",
-      ],
-    ],
-  },
-  {
-    slug: "community-health-outreach",
-    shortTitle: "Community Health Outreach",
-    title: "Maternal & Family Health Outreach",
-    category: "Healthcare",
-    date: "March 9, 2026",
-    location: "Ada Foah, Greater Accra Region",
-    status: "Completed",
-    heroImage: images.health,
-    secondaryImage: images.about,
-    summary:
-      "A family health outreach providing screenings, maternal-care guidance, nutrition education, and supported referrals.",
-    description: [
-      "The health outreach created an accessible setting where families could speak with trained practitioners, receive basic screenings, and learn about maternal health, nutrition, child wellbeing, and preventive care.",
-      "Cases requiring additional attention were connected to referral partners. Volunteers supported registration, participant flow, health education, documentation, and follow-up communication.",
-    ],
-    metrics: [
-      { icon: "medical_services", value: "310", label: "Health screenings" },
-      { icon: "pregnant_woman", value: "95", label: "Mothers supported" },
-      { icon: "stethoscope", value: "14", label: "Health professionals" },
-      { icon: "partner_exchange", value: "4", label: "Referral partners" },
-    ],
-    expectations: [
-      {
-        icon: "health_metrics",
-        title: "Accessible basic screenings",
-        body: "Participants receive checks and guidance in a respectful, community-based setting.",
-      },
-      {
-        icon: "nutrition",
-        title: "Family nutrition education",
-        body: "Practical sessions connect everyday nutrition decisions with maternal and child wellbeing.",
-      },
-    ],
-    steps: [
-      {
-        title: "Plan with local health partners",
-        body: "Priority services and referral pathways are agreed before the outreach.",
-        detail:
-          "The team confirms practitioner roles, screening stations, safeguarding, privacy, equipment, and referral contacts.",
-      },
-      {
-        title: "Deliver screening and education",
-        body: "Families move through registration, screening, consultation, and learning stations.",
-        detail:
-          "Volunteers support an orderly and respectful experience while qualified practitioners provide all clinical guidance.",
-      },
-      {
-        title: "Complete referrals and reporting",
-        body: "Participants needing additional support receive clear next steps.",
-        detail:
-          "Program records capture participation, referrals, education sessions, and operational lessons without compromising personal dignity.",
-      },
-    ],
-    gallery: [
-      { src: images.health, alt: "A health worker speaking with a mother" },
-      { src: images.about, alt: "A community support conversation" },
-      { src: images.community, alt: "Families taking part in an outreach" },
-      { src: images.news, alt: "Community members gathered for a program" },
-      { src: images.education, alt: "Young participants at a foundation program" },
-    ],
-    faqs: [
-      [
-        "Are the screenings a replacement for hospital care?",
-        "No. They provide basic checks and guidance; urgent or ongoing needs are referred to qualified healthcare providers.",
-      ],
-      [
-        "Who provides clinical guidance?",
-        "Clinical services are delivered by qualified practitioners and approved health partners.",
-      ],
-      [
-        "Can health professionals volunteer?",
-        "Yes. Registration is reviewed against the needs, responsibilities, and professional requirements of each outreach.",
-      ],
-      [
-        "How are participant details protected?",
-        "The team limits data collection, uses it only for program delivery, and prioritizes privacy and dignity.",
-      ],
-    ],
-  },
-  {
-    slug: "community-support-drive",
-    shortTitle: "Community Support Drive",
-    title: "Community Food & Livelihood Support Drive",
-    category: "Community Support",
-    date: "January 27, 2026",
-    location: "Cape Coast, Central Region",
-    status: "Completed",
-    heroImage: images.community,
-    secondaryImage: images.news,
-    summary:
-      "A coordinated outreach combining household food support with practical livelihood starter resources and community referrals.",
-    description: [
-      "The support drive responded to immediate household needs while creating pathways toward greater stability. Community representatives helped identify priorities and organize dignified distribution.",
-      "Selected participants also joined livelihood sessions covering budgeting, small-enterprise planning, local support networks, and the responsible use of starter resources.",
-    ],
-    metrics: [
-      { icon: "family_restroom", value: "240", label: "Households reached" },
-      { icon: "restaurant", value: "3,600", label: "Meals supported" },
-      { icon: "business_center", value: "36", label: "Livelihood starter kits" },
-      { icon: "volunteer_activism", value: "28", label: "Volunteers involved" },
-    ],
-    expectations: [
-      {
-        icon: "grocery",
-        title: "Dignified household support",
-        body: "Distribution is organized with local representatives around clear household priorities.",
-      },
-      {
-        icon: "storefront",
-        title: "Livelihood starter guidance",
-        body: "Participants receive practical planning support alongside selected starter resources.",
-      },
-    ],
-    steps: [
-      {
-        title: "Coordinate local priorities",
-        body: "Community representatives help define needs and a transparent delivery approach.",
-        detail:
-          "The team confirms intended households, distribution logistics, safeguarding considerations, and available referral pathways.",
-      },
-      {
-        title: "Deliver support and workshops",
-        body: "Volunteers coordinate distribution while facilitators lead livelihood sessions.",
-        detail:
-          "Activities are scheduled to minimize waiting and support a calm, respectful experience for participating households.",
-      },
-      {
-        title: "Review and connect follow-up",
-        body: "Feedback and referrals identify opportunities for continued support.",
-        detail:
-          "The team documents delivery totals, participation, local feedback, referrals, and recommendations for future community work.",
-      },
-    ],
-    gallery: [
-      { src: images.community, alt: "Volunteers supporting a community distribution" },
-      { src: images.news, alt: "A community gathering at a support hub" },
-      { src: images.about, alt: "A support conversation with a community member" },
-      { src: images.health, alt: "A family receiving practical guidance" },
-      { src: images.water, alt: "Residents participating in a foundation program" },
-    ],
-    faqs: [
-      [
-        "How are participating households identified?",
-        "Community representatives and program partners help assess needs using the criteria agreed for each outreach.",
-      ],
-      [
-        "Can food or household items be donated?",
-        "Contact the team before donating goods so items can be matched to a current need and delivery plan.",
-      ],
-      [
-        "What is included in a livelihood starter kit?",
-        "Contents vary by the participant plan, local opportunity, funding, and the practical purpose of each kit.",
-      ],
-      [
-        "Can companies sponsor a support drive?",
-        "Yes. Corporate partners can discuss funding, goods, logistics, volunteers, or livelihood resources with our team.",
+        "Why that date?",
+        "September 16 is the birthday of Mr. Aboagye Divine, Founder and CEO of Life Story Group, who spent the day at the home with the children.",
       ],
     ],
   },
 ];
 
+/** Look up a single outreach by its URL slug. */
 export function getProject(slug: string) {
   return projects.find((project) => project.slug === slug);
 }

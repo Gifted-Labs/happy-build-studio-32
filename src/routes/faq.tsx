@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "../components/landing/motion";
 import { PageShell, siteImages } from "../components/site/page-shell";
+import { ResponsiveImage } from "../components/site/responsive-image";
 
 export const Route = createFileRoute("/faq")({ component: FaqPage });
 
@@ -150,9 +151,13 @@ function FaqPage() {
             </nav>
 
             <div className="relative min-h-[300px] overflow-hidden rounded-lg p-6 text-white">
-              <img
+              <ResponsiveImage
                 src={siteImages.community}
                 alt="Life Story Foundation community support"
+                width={800}
+                height={600}
+                sizes="(min-width: 1024px) 320px, 100vw"
+                fit="cover"
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-navy-900/80" />

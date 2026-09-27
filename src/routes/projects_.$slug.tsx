@@ -3,13 +3,42 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ActionLink, SectionLabel } from "../components/landing/reference-layout";
 import { Icon } from "../components/landing/motion";
 import { ActionBand, PageShell, siteImages } from "../components/site/page-shell";
+import { ResponsiveImage } from "../components/site/responsive-image";
+import { SiteLink } from "../components/site/site-link";
+import { mediaSrc, cfImage } from "../lib/media";
 import { getProject, projects } from "../data/projects";
+
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestory.org").replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects_/$slug")({
   loader: ({ params }) => {
     const project = getProject(params.slug);
     if (!project) throw notFound();
     return project;
+  },
+  /**
+   * Per-page metadata. Without this every project inherits the root's single
+   * site-wide title, so search results and shared links are indistinguishable
+   * from one another and from the home page.
+   */
+  head: ({ loaderData: project }) => {
+    if (!project) return {};
+    const title = `${project.shortTitle} — Life Story Foundation`;
+    const image = mediaSrc(project.heroImage);
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: project.summary },
+        { property: "og:title", content: title },
+        { property: "og:description", content: project.summary },
+        { property: "og:type", content: "article" },
+        { property: "og:image", content: image },
+        { property: "og:url", content: `${SITE_URL}/projects/${project.slug}` },
+        { name: "twitter:image", content: image },
+      ],
+      links: [{ rel: "canonical", href: `${SITE_URL}/projects/${project.slug}` }],
+    };
   },
   component: ProjectDetailPage,
 });
@@ -70,7 +99,7 @@ function ProjectDetailPage() {
               </div>
               <div className="p-3">
                 {projects.map((item) => (
-                  <a
+                  <SiteLink
                     key={item.slug}
                     href={`/projects/${item.slug}`}
                     aria-current={item.slug === project.slug ? "page" : undefined}
@@ -82,15 +111,19 @@ function ProjectDetailPage() {
                   >
                     {item.shortTitle}
                     <Icon name="arrow_outward" className="shrink-0 text-[17px]" />
-                  </a>
+                  </SiteLink>
                 ))}
               </div>
             </nav>
 
             <div className="relative min-h-[300px] overflow-hidden rounded-lg p-6 text-white">
-              <img
+              <ResponsiveImage
                 src={siteImages.community}
                 alt="Life Story Foundation community support"
+                width={800}
+                height={600}
+                sizes="(min-width: 1024px) 320px, 100vw"
+                fit="cover"
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-navy-900/82" />
@@ -104,20 +137,25 @@ function ProjectDetailPage() {
                     Ask about sponsoring, volunteering, or supporting a future community visit.
                   </p>
                 </div>
-                <a
+                <SiteLink
                   href="/contact"
                   className="flex items-center justify-between border-t border-white/20 pt-4 text-sm font-semibold text-brand-mint"
                 >
                   Contact our team <Icon name="arrow_outward" className="text-[17px]" />
-                </a>
+                </SiteLink>
               </div>
             </div>
           </aside>
 
           <div className="min-w-0">
-            <img
+            <ResponsiveImage
               src={project.heroImage}
               alt={`${project.title} featured view`}
+              width={1600}
+              height={900}
+              sizes="(min-width: 1024px) 70vw, 100vw"
+              priority
+              fit="cover"
               className="aspect-[16/9] w-full rounded-lg object-cover shadow-sm"
             />
 
@@ -200,9 +238,13 @@ function ProjectDetailPage() {
                   ))}
                 </div>
               </div>
-              <img
+              <ResponsiveImage
                 src={project.secondaryImage}
                 alt={`${project.title} community activity`}
+                width={800}
+                height={1000}
+                sizes="(min-width: 1024px) 35vw, 100vw"
+                fit="cover"
                 className="aspect-[4/5] w-full rounded-lg object-cover"
               />
             </section>
@@ -277,9 +319,13 @@ function ProjectDetailPage() {
                       aria-label={`Open gallery image ${index + 1}: ${image.alt}`}
                       className="group relative h-full min-h-[240px] w-full overflow-hidden text-left md:min-h-0"
                     >
-                      <img
+                      <ResponsiveImage
                         src={image.src}
                         alt={image.alt}
+                        width={800}
+                        height={800}
+                        sizes="(min-width: 768px) 33vw, 100vw"
+                        fit="cover"
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <span className="absolute inset-0 bg-navy-900/0 transition-colors group-hover:bg-navy-900/25" />
@@ -373,7 +419,10 @@ function ProjectDetailPage() {
             onClick={(event) => event.stopPropagation()}
           >
             <img
-              src={project.gallery[activeImage].src}
+              src={cfImage(mediaSrc(project.gallery[activeImage].src), {
+                width: 1600,
+                fit: "scale-down",
+              })}
               alt={project.gallery[activeImage].alt}
               className="max-h-[78vh] w-auto max-w-full rounded-lg object-contain shadow-2xl"
             />

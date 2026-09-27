@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { VolunteerForm } from "../components/forms/volunteer-form";
 import {
   ActionBand,
   InfoGrid,
@@ -67,6 +68,7 @@ function GetInvolvedPage() {
           { icon: "handshake", value: "15+", label: "Program partners" },
         ]}
       />
+      <VolunteerForm />
       <ActionBand
         title="Prefer to support from anywhere?"
         body="A donation helps fund materials, transport, local staff, and essential project delivery."

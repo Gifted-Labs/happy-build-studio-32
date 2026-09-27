@@ -5,70 +5,77 @@ import {
   PageShell,
   SplitFeature,
   StatsBand,
-  siteImages,
 } from "../components/site/page-shell";
+import { projects } from "../data/projects";
 
-export const Route = createFileRoute("/projects")({ component: ProjectsPage });
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestory.org").replace(/\/$/, "");
 
+export const Route = createFileRoute("/projects")({
+  head: () => ({
+    meta: [
+      { title: "Our Projects — Life Story Foundation" },
+      {
+        name: "description",
+        content:
+          "Completed outreaches by the Life Story Foundation across Kumasi — school materials for pupils, a Christmas meal at Krofrom, and provisions for a children's home.",
+      },
+      { property: "og:title", content: "Our Projects — Life Story Foundation" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/projects` }],
+  }),
+  component: ProjectsPage,
+});
+
+/** Icon per project category, so the grid stays in step with the data. */
+const CATEGORY_ICONS: Record<string, string> = {
+  Education: "school",
+  Community: "groups",
+  "Children & Welfare": "volunteer_activism",
+};
+
+/**
+ * Built from the `projects` data rather than a hand-written list, so an outreach
+ * added there shows up here automatically instead of drifting out of sync.
+ */
 function ProjectsPage() {
+  const [featured] = projects;
+
   return (
     <PageShell
       eyebrow="OUR PROJECTS"
-      title="Practical programs built around real needs"
-      intro="From classrooms to clinics and clean water systems, each project is planned with the people who will use and sustain it."
-      image={siteImages.education}
+      title="Outreaches built around real needs"
+      intro="Each outreach is planned with the schools, homes, and communities it serves — and recorded here as it actually happened."
+      image={featured.heroImage}
     >
       <InfoGrid
-        eyebrow="PROGRAM AREAS"
-        title="Four connected paths to opportunity"
-        items={[
-          {
-            id: "education",
-            href: "/projects/education-access",
-            icon: "school",
-            title: "Education",
-            body: "School materials, scholarships, mentoring, and vocational pathways for young people.",
-          },
-          {
-            id: "healthcare",
-            href: "/projects/community-health-outreach",
-            icon: "health_and_safety",
-            title: "Healthcare",
-            body: "Community screenings, nutrition support, maternal care, and essential health education.",
-          },
-          {
-            id: "clean-water",
-            href: "/projects/clean-water-access",
-            icon: "water_drop",
-            title: "Clean Water",
-            body: "Reliable water access, sanitation facilities, maintenance training, and hygiene programs.",
-          },
-          {
-            id: "community",
-            href: "/projects/community-support-drive",
-            icon: "groups",
-            title: "Community Support",
-            body: "Local leadership, food security, family support, and resilient livelihoods.",
-          },
-        ]}
+        eyebrow="OUR OUTREACHES"
+        title="Where the Foundation has worked"
+        items={projects.map((project) => ({
+          id: project.slug,
+          href: `/projects/${project.slug}`,
+          icon: CATEGORY_ICONS[project.category] ?? "favorite",
+          title: project.shortTitle,
+          body: project.summary,
+        }))}
       />
       <SplitFeature
         eyebrow="FEATURED PROJECT"
-        title="Safe water creates time for school, work, and family"
-        body="Our water projects pair durable infrastructure with local maintenance teams and practical sanitation education. That combination keeps systems working and helps communities protect the health gains they create."
-        image={siteImages.water}
-        imageAlt="Community clean water project"
+        title={featured.title}
+        body={featured.summary}
+        image={featured.secondaryImage}
+        imageAlt={featured.gallery[0]?.alt ?? featured.shortTitle}
         actionLabel="View Project Details"
-        actionHref="/projects/clean-water-access"
+        actionHref={`/projects/${featured.slug}`}
       />
       <StatsBand
         eyebrow="OUR REACH"
-        title="Programs designed for measurable progress"
-        intro="Each project is connected to clear outcomes, accountable delivery, and long-term community ownership."
+        title="What these outreaches delivered"
+        intro="Figures recorded from the Foundation's own account of each outreach."
         items={[
-          { icon: "school", value: "500+", label: "Children supported" },
-          { icon: "water_drop", value: "20+", label: "Active projects" },
-          { icon: "diversity_3", value: "12", label: "Partner communities" },
+          { icon: "school", value: "200+", label: "Pupils given books and pens" },
+          { icon: "restaurant", value: "100+", label: "Plates served at Krofrom" },
+          { icon: "diversity_3", value: `${projects.length}`, label: "Outreaches completed" },
         ]}
       />
       <ActionBand

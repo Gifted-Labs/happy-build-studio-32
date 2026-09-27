@@ -1,0 +1,88 @@
+/**
+ * Cloudflare Worker configuration.
+ *
+ * This file is NOT the config wrangler deploys from. `npm run build` runs nitro,
+ * which merges this file with its own values and writes the result to
+ * dist/server/wrangler.json — that is what ships. So:
+ *
+ *   - `main` and `assets` are deliberately absent. Nitro always overrides them
+ *     (and warns if they are set here) because only it knows its output layout.
+ *   - Everything below — bindings, vars, name — passes through untouched, which
+ *     is the only way the Worker gets a D1 binding.
+ *
+ * Migrations and `wrangler d1` commands read this file directly, not the built one.
+ */
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lifestory-foundation",
+
+  // Keep within ~30 days of the deploy when bumping; nodejs_compat is required
+  // by the built server bundle (nitro sets it too, listed here to be explicit).
+  "compatibility_date": "2026-09-26",
+  "compatibility_flags": ["nodejs_compat"],
+
+  /**
+   * Form submissions (see migrations/ and src/lib/submit-form.ts).
+   *
+   * `database_id` is pinned rather than resolved by name: the config wrangler
+   * actually deploys from is regenerated on every build, so there is nowhere for a
+   * name-resolved id to persist. `binding` must stay `DB` — that is the name
+   * lib/server/env.ts reads, not the `lifestory_submissions` wrangler suggests.
+   */
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lifestory-submissions",
+      "database_id": "809ae64c-d3c3-49d4-909e-64ea66189568",
+      "migrations_dir": "./migrations"
+    }
+  ],
+
+  /**
+   * The prerenderer writes `contact/index.html`, which Workers Assets serves at
+   * `/contact/` by default — 307-redirecting the bare `/contact` that both the
+   * sitemap and every in-app <Link> actually use. Dropping the trailing slash
+   * makes the served URL the advertised one, so no page costs a redirect hop.
+   *
+   * `binding` and `directory` are intentionally not set here; nitro supplies them
+   * and deep-merges this key, so only the option it does not set is listed.
+   * The build logs one "assets is overridden" warning for this — expected.
+   */
+  "assets": {
+    "html_handling": "drop-trailing-slash"
+  },
+
+  /**
+   * Non-secret configuration. The two actual secrets — TURNSTILE_SECRET_KEY and
+   * RESEND_API_KEY — are set with `wrangler secret put` and never live here.
+   */
+  "vars": {
+    // Must be a Resend-verified sender on the lifestory.org domain.
+    "RESEND_FROM": "Life Story Foundation <hello@lifestory.org>",
+    // Where submission notifications land; the public address used on /contact.
+    "NOTIFY_EMAIL": "contact@lifestory.org",
+
+    /**
+     * Hostnames a solved Turnstile challenge may come from.
+     *
+     * The widget is registered for several domains, so `success: true` only proves
+     * the token came from *a* page using our site key. This pins it to ours.
+     *
+     * Deliberately excludes localhost and 127.0.0.1: this is the production list,
+     * and accepting a locally solved challenge here would defeat the check. Local
+     * development gets its own list via .dev.vars.
+     *
+     * The workers.dev hostname is not here yet — add it (it is printed on the
+     * first deploy, as lifestory-foundation.<subdomain>.workers.dev) if you want
+     * the forms to work on that URL before the real domain is attached.
+     */
+    "TURNSTILE_HOSTNAMES": "lifestory.org,www.lifestory.org"
+  },
+
+  // Form submissions are the only server-side path, so sample every request —
+  // the volume is far too low for sampling to matter and errors must be visible.
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  }
+}

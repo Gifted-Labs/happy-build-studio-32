@@ -2,40 +2,48 @@ import { useState } from "react";
 import { ActionLink, LandingFooter, LandingNav, SectionLabel } from "../landing/reference-layout";
 import { Icon } from "../landing/motion";
 import { siteImages } from "../site/page-shell";
+import { ResponsiveImage } from "../site/responsive-image";
+import { SiteLink } from "../site/site-link";
+import type { MediaKey } from "../../lib/media";
 
-const team = [
+const team: Array<{ name: string; role: string; image: MediaKey }> = [
   {
     name: "Daniel Kwarteng",
     role: "Volunteer Coordinator",
-    image: siteImages.community,
+    image: "team1",
   },
   {
     name: "Ama Owusu",
     role: "Programs and Operations",
-    image: siteImages.about,
+    image: "team2",
   },
   {
     name: "Efua Mensah",
     role: "Community Outreach Manager",
-    image: siteImages.health,
+    image: "team3",
   },
 ];
 
 function AboutHero() {
   return (
     <header className="relative flex min-h-[540px] items-end overflow-hidden bg-navy-900 pb-20 pt-32 text-white md:min-h-[620px]">
-      <img
+      <ResponsiveImage
         src={siteImages.about}
         alt="A young person participating in a Life Story Foundation program"
+        width={2000}
+        height={1240}
+        sizes="100vw"
+        priority
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/55 to-navy-900/5" />
       <div className="relative z-10 mx-auto w-full max-w-max-width px-6">
         <h1 className="font-display text-[2.75rem] leading-none md:text-[4.5rem]">About us</h1>
         <div className="mt-5 flex items-center gap-2 text-sm text-white/75">
-          <a href="/" className="transition-colors hover:text-brand-mint">
+          <SiteLink href="/" className="transition-colors hover:text-brand-mint">
             Home
-          </a>
+          </SiteLink>
           <Icon name="chevron_right" className="text-[17px]" />
           <span>About Us</span>
         </div>
@@ -49,19 +57,31 @@ function FoundationStory() {
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[560px] w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={siteImages.education}
             alt="Children learning together"
+            width={646}
+            height={740}
+            sizes="(min-width: 1024px) 323px, 62vw"
+            fit="cover"
             className="absolute left-[8%] top-[10%] h-[370px] w-[62%] rounded-lg object-cover shadow-xl"
           />
-          <img
+          <ResponsiveImage
             src={siteImages.community}
             alt="Community volunteers"
+            width={458}
+            height={460}
+            sizes="(min-width: 1024px) 229px, 44vw"
+            fit="cover"
             className="absolute right-0 top-0 h-[230px] w-[44%] rounded-lg border-4 border-surface-page object-cover"
           />
-          <img
+          <ResponsiveImage
             src={siteImages.health}
             alt="Community health outreach"
+            width={458}
+            height={500}
+            sizes="(min-width: 1024px) 229px, 44vw"
+            fit="cover"
             className="absolute bottom-0 left-0 h-[250px] w-[44%] rounded-lg border-4 border-surface-page object-cover shadow-lg"
           />
         </div>
@@ -104,9 +124,12 @@ function FoundationStory() {
           <div className="mt-8 flex flex-wrap items-center gap-6">
             <ActionLink href="/contact">Connect With Us</ActionLink>
             <div className="flex items-center gap-3">
-              <img
+              <ResponsiveImage
                 src={siteImages.about}
                 alt="Life Story Foundation team member"
+                width={88}
+                height={88}
+                fit="cover"
                 className="h-11 w-11 rounded-full object-cover"
               />
               <div>
@@ -156,9 +179,13 @@ function PurposeCards() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {purposes.map((item) => (
             <article key={item.title} className="overflow-hidden rounded-lg bg-surface-page p-3">
-              <img
+              <ResponsiveImage
                 src={item.image}
                 alt=""
+                width={800}
+                height={600}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
                 className="aspect-[4/3] w-full rounded-md object-cover"
               />
               <div className="p-5">
@@ -173,9 +200,9 @@ function PurposeCards() {
         </div>
         <div className="mt-10 text-center text-sm text-on-surface-variant">
           Let&apos;s make something good work together.{" "}
-          <a href="/get-involved" className="font-semibold text-primary underline">
+          <SiteLink href="/get-involved" className="font-semibold text-primary underline">
             Get involved
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -187,18 +214,26 @@ function ImpactSection() {
     <section className="bg-surface-muted py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto h-[570px] w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={siteImages.community}
             alt="A child supported by community programs"
+            width={790}
+            height={1140}
+            sizes="(min-width: 1024px) 395px, 76vw"
+            fit="cover"
             className="absolute inset-y-0 left-[8%] w-[76%] rounded-lg object-cover"
           />
           <div className="absolute left-0 top-12 rounded-lg bg-white p-5 shadow-xl">
             <strong className="block font-display text-2xl text-navy-900">500+</strong>
             <span className="text-sm text-on-surface-variant">People supported</span>
           </div>
-          <img
+          <ResponsiveImage
             src={siteImages.education}
             alt="Students in a Life Story Foundation program"
+            width={436}
+            height={420}
+            sizes="(min-width: 1024px) 218px, 42vw"
+            fit="cover"
             className="absolute bottom-8 right-0 h-[210px] w-[42%] rounded-lg border-4 border-surface-muted object-cover"
           />
         </div>
@@ -229,9 +264,13 @@ function ImpactSection() {
                 </div>
               ))}
             </div>
-            <img
+            <ResponsiveImage
               src={siteImages.health}
               alt="Community outreach participants"
+              width={600}
+              height={440}
+              sizes="(min-width: 1024px) 300px, 50vw"
+              fit="cover"
               className="h-full min-h-[220px] w-full object-cover"
             />
           </div>
@@ -354,9 +393,13 @@ function CauseGallery() {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {causes.map(([image, category, title, href]) => (
             <article key={title} className="group relative aspect-[4/5] overflow-hidden rounded-lg">
-              <img
+              <ResponsiveImage
                 src={image}
                 alt=""
+                width={800}
+                height={1000}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/10 to-transparent" />
@@ -365,21 +408,21 @@ function CauseGallery() {
                   {category}
                 </span>
                 <h3 className="mt-6 font-display text-xl">{title}</h3>
-                <a
+                <SiteLink
                   href={href}
                   className="mt-5 flex items-center justify-between border-t border-white/25 pt-4 text-sm font-semibold"
                 >
                   Read more <Icon name="arrow_outward" />
-                </a>
+                </SiteLink>
               </div>
             </article>
           ))}
         </div>
         <div className="mt-10 text-center text-sm text-on-surface-variant">
           Let&apos;s create lasting change together.{" "}
-          <a href="/donate" className="font-semibold text-primary underline">
+          <SiteLink href="/donate" className="font-semibold text-primary underline">
             Donate today
-          </a>
+          </SiteLink>
         </div>
       </div>
     </section>
@@ -389,9 +432,13 @@ function CauseGallery() {
 function StoryBand() {
   return (
     <section className="relative flex h-[560px] items-center justify-center overflow-hidden text-center text-white">
-      <img
+      <ResponsiveImage
         src={siteImages.community}
         alt="Life Story Foundation community program"
+        width={2000}
+        height={1120}
+        sizes="100vw"
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-navy-900/78" />
@@ -402,13 +449,13 @@ function StoryBand() {
           Through collective support from donors, volunteers, and partners, we create opportunity
           and dignity in the communities we serve.
         </p>
-        <a
+        <SiteLink
           href="/projects"
           aria-label="Explore our community work"
           className="mx-auto mt-16 grid h-20 w-20 place-items-center rounded-full bg-brand-mint text-ink-900 shadow-xl"
         >
           <Icon name="play_arrow" filled className="text-[30px]" />
-        </a>
+        </SiteLink>
       </div>
     </section>
   );
@@ -441,9 +488,13 @@ function TeamSection() {
               key={member.name}
               className="group relative aspect-[4/5] overflow-hidden rounded-lg"
             >
-              <img
+              <ResponsiveImage
                 src={member.image}
                 alt={member.name}
+                width={800}
+                height={1000}
+                sizes="(min-width: 768px) 33vw, 100vw"
+                fit="cover"
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent" />
@@ -467,9 +518,13 @@ function TeamSection() {
 function TestimonialBand() {
   return (
     <section className="relative overflow-hidden py-24 text-white md:py-32">
-      <img
+      <ResponsiveImage
         src={siteImages.health}
         alt="Community healthcare volunteers"
+        width={2000}
+        height={1200}
+        sizes="100vw"
+        fit="cover"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-gradient-to-r from-navy-900/75 via-navy-900/35 to-navy-900/70" />
@@ -485,9 +540,12 @@ function TestimonialBand() {
             transparent approach gives our community confidence in every contribution.
           </p>
           <div className="mt-12 flex items-center gap-3 border-t border-border pt-6">
-            <img
+            <ResponsiveImage
               src={siteImages.about}
               alt="Akosua Boateng"
+              width={88}
+              height={88}
+              fit="cover"
               className="h-11 w-11 rounded-full object-cover"
             />
             <div>
@@ -530,9 +588,13 @@ function FaqSection() {
     <section className="bg-surface-page py-24 md:py-32">
       <div className="mx-auto grid max-w-max-width items-center gap-16 px-6 lg:grid-cols-2">
         <div className="relative mx-auto w-full max-w-[520px]">
-          <img
+          <ResponsiveImage
             src={siteImages.community}
             alt="Community support program"
+            width={854}
+            height={1068}
+            sizes="(min-width: 1024px) 427px, 82vw"
+            fit="cover"
             className="aspect-[4/5] w-[82%] rounded-lg object-cover"
           />
           <div className="absolute bottom-8 right-0 w-[230px] rounded-lg bg-navy-900 p-6 text-white shadow-xl">

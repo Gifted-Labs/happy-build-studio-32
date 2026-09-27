@@ -62,6 +62,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
+          {/*
+            Deliberately a plain anchor, not <Link>: the router has already hit an
+            error here, so a full document load is the more reliable escape hatch.
+          */}
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
@@ -84,18 +88,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "A Ghana-based non-profit providing education, healthcare, and clean water to communities in need. Join us in rewriting lives.",
+          "A Ghana-based charitable foundation supporting schools, children's homes, and communities around Kumasi with practical, hands-on outreaches. Join us in rewriting lives.",
       },
       { name: "author", content: "Life Story Foundation" },
       { property: "og:title", content: "Life Story Foundation — Help write a new life story" },
       {
         property: "og:description",
         content:
-          "Providing education, healthcare, and clean water to communities in Ghana. Donate today.",
+          "Supporting schools, children's homes, and communities around Kumasi, Ghana. Donate today.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {

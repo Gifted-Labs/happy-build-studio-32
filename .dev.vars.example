@@ -1,0 +1,20 @@
+# Local values for `wrangler dev`. Copy to `.dev.vars` (gitignored) and fill in.
+# In production these are set instead with `wrangler secret put <NAME>`, except
+# RESEND_FROM / NOTIFY_EMAIL which live in wrangler.jsonc under "vars".
+
+# Cloudflare Turnstile. The value below is Cloudflare's documented always-passes
+# TEST secret — correct for local development, never for production.
+# Pair it with the matching test site key (the default in turnstile-widget.tsx).
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Hostnames a solved challenge may come from, for local runs only.
+# `example.com` is what Cloudflare's test keys report back regardless of where the
+# widget was actually solved. Never put example.com or localhost in the production
+# list (that one lives in wrangler.jsonc under "vars").
+TURNSTILE_HOSTNAMES=localhost,127.0.0.1,example.com
+
+# Resend. Leave blank to exercise the form without sending mail: submissions are
+# still stored in D1 and the row records email_status='failed'.
+RESEND_API_KEY=
+RESEND_FROM=Life Story Foundation <hello@lifestory.org>
+NOTIFY_EMAIL=contact@lifestory.org

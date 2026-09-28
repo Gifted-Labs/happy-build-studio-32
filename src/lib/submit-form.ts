@@ -87,62 +87,83 @@ async function recordEmailOutcome(
 export const submitForm = createServerFn({ method: "POST" })
   .validator((data: unknown) => data)
   .handler(async ({ data }): Promise<SubmissionResult> => {
-    const parsed = submissionSchema.safeParse(data);
-
-    if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
-      for (const issue of parsed.error.issues) {
-        const key = issue.path.join(".") || "form";
-        fieldErrors[key] ??= issue.message;
-      }
-      return { ok: false, error: "Please check the highlighted fields.", fieldErrors };
-    }
-
-    const submission = parsed.data;
-    const meta = requestMeta();
-
-    /**
-     * The submission's own `kind` is the expected Turnstile action, and each form
-     * mints its token with that action. So a token is only ever spendable on the
-     * form it came from — a newsletter token cannot be replayed against the
-     * contact handler. The kinds are already valid action strings (1-32 chars,
-     * alphanumeric and hyphens), so no separate mapping is needed.
-     */
-    const human = await verifyTurnstile(submission.turnstileToken, submission.kind, meta.ip);
-    if (!human) {
+    try {
+      return await handle(data);
+    } catch (error) {
+      /**
+       * Anything unhandled reaching here is a fault at our end, not the
+       * visitor's — most likely a missing key or binding. Left to throw it
+       * becomes a 500 the client can only report as "something went wrong",
+       * which is exactly the message that tells nobody anything. The detail goes
+       * to the logs; the visitor gets a way to reach the foundation regardless.
+       */
+      console.error("[submissions] unhandled failure", error);
       return {
         ok: false,
-        error: "We could not verify that you are human. Please reload and try again.",
+        error:
+          "Something went wrong at our end and your message was not sent. " +
+          "Please try again in a moment, or email us directly at contact@lifestory.org.",
       };
     }
-
-    const reference = makeReference();
-
-    let stored = false;
-    try {
-      stored = await persist(submission, reference, meta);
-    } catch (error) {
-      console.error("[submissions] failed to persist", error);
-      return {
-        ok: false,
-        error: "We could not save your message just now. Please try again in a moment.",
-      };
-    }
-
-    if (!stored && isDev) {
-      console.info("[submissions] (dev, not persisted)", reference, submission.kind);
-    }
-
-    // Email is best-effort from here on; the submission is already safe.
-    try {
-      await sendNotification(submission, reference);
-      await sendAcknowledgement(submission, reference);
-      await recordEmailOutcome(reference, "sent");
-    } catch (error) {
-      const detail = error instanceof Error ? error.message : String(error);
-      console.error("[submissions] email failed", detail);
-      await recordEmailOutcome(reference, "failed", detail).catch(() => {});
-    }
-
-    return { ok: true, reference };
   });
+
+async function handle(data: unknown): Promise<SubmissionResult> {
+  const parsed = submissionSchema.safeParse(data);
+
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string> = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path.join(".") || "form";
+      fieldErrors[key] ??= issue.message;
+    }
+    return { ok: false, error: "Please check the highlighted fields.", fieldErrors };
+  }
+
+  const submission = parsed.data;
+  const meta = requestMeta();
+
+  /**
+   * The submission's own `kind` is the expected Turnstile action, and each form
+   * mints its token with that action. So a token is only ever spendable on the
+   * form it came from — a newsletter token cannot be replayed against the
+   * contact handler. The kinds are already valid action strings (1-32 chars,
+   * alphanumeric and hyphens), so no separate mapping is needed.
+   */
+  const human = await verifyTurnstile(submission.turnstileToken, submission.kind, meta.ip);
+  if (!human) {
+    return {
+      ok: false,
+      error: "We could not verify that you are human. Please reload and try again.",
+    };
+  }
+
+  const reference = makeReference();
+
+  let stored = false;
+  try {
+    stored = await persist(submission, reference, meta);
+  } catch (error) {
+    console.error("[submissions] failed to persist", error);
+    return {
+      ok: false,
+      error: "We could not save your message just now. Please try again in a moment.",
+    };
+  }
+
+  if (!stored && isDev) {
+    console.info("[submissions] (dev, not persisted)", reference, submission.kind);
+  }
+
+  // Email is best-effort from here on; the submission is already safe.
+  try {
+    await sendNotification(submission, reference);
+    await sendAcknowledgement(submission, reference);
+    await recordEmailOutcome(reference, "sent");
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    console.error("[submissions] email failed", detail);
+    await recordEmailOutcome(reference, "failed", detail).catch(() => {});
+  }
+
+  return { ok: true, reference };
+}

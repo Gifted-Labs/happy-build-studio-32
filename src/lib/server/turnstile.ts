@@ -89,10 +89,21 @@ export async function verifyTurnstile(
   expectedAction: string,
   remoteIp?: string,
 ): Promise<boolean> {
-  const secret = bindings.TURNSTILE_SECRET_KEY ?? (isDev ? TEST_SECRET : undefined);
+  /**
+   * Trimmed, and an empty value counts as absent.
+   *
+   * `wrangler secret put` run without a terminal stores an empty string rather
+   * than prompting, which leaves the secret *listed* but blank — so `?? ` would
+   * happily hand "" to siteverify and every submission would fail with an error
+   * about the response rather than about the configuration.
+   */
+  const secret = bindings.TURNSTILE_SECRET_KEY?.trim() || (isDev ? TEST_SECRET : undefined);
 
   if (!secret) {
-    throw new Error("TURNSTILE_SECRET_KEY is not configured on this Worker.");
+    throw new Error(
+      "TURNSTILE_SECRET_KEY is missing or empty on this Worker. Set it with " +
+        "`wrangler secret put TURNSTILE_SECRET_KEY` from an interactive terminal.",
+    );
   }
 
   // Throws on missing production configuration — that is a deploy-time mistake,

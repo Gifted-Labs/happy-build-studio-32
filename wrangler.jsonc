@@ -87,14 +87,19 @@
    */
   "vars": {
     /**
-     * NOTE: this sender is on lifestory.org, but the site runs on
-     * lifestorycharitablefoundation.com. Resend only sends from a domain it has
-     * verified, so unless lifestory.org is verified there, every send is
-     * rejected. Confirm which domain is verified before relying on email.
+     * Sender for both the internal notification and the visitor's
+     * acknowledgement. Resend will only send from a domain verified in the
+     * account the RESEND_API_KEY belongs to — if this domain is not verified
+     * there, every send is rejected with a 403 and the submission is recorded
+     * with email_status='failed'.
      */
-    "RESEND_FROM": "Life Story Foundation <hello@lifestory.org>",
-    // Where submission notifications land; the public address used on /contact.
-    "NOTIFY_EMAIL": "contact@lifestory.org",
+    "RESEND_FROM": "Life Story Foundation <info@lifestorycharitablefoundation.com>",
+    /**
+     * Where submission notifications land, and the address offered to a visitor
+     * when a submission cannot be sent at all. It has to be a mailbox someone
+     * actually reads — an enquiry is only as good as the person who sees it.
+     */
+    "NOTIFY_EMAIL": "info@lifestorycharitablefoundation.com",
 
     /**
      * Hostnames a solved Turnstile challenge may come from.

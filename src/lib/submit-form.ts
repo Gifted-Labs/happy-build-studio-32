@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 
 import { submissionSchema, type Submission, type SubmissionResult } from "./submissions";
-import { getDb, isDev } from "./server/env";
+import { bindings, getDb, isDev } from "./server/env";
 import { verifyTurnstile } from "./server/turnstile";
 import { sendAcknowledgement, sendNotification } from "./server/email";
 
@@ -98,11 +98,15 @@ export const submitForm = createServerFn({ method: "POST" })
        * to the logs; the visitor gets a way to reach the foundation regardless.
        */
       console.error("[submissions] unhandled failure", error);
+
+      // Read from configuration rather than written in here, so the address a
+      // stranded visitor is given cannot drift from the one that is monitored.
+      const address = bindings.NOTIFY_EMAIL?.trim();
       return {
         ok: false,
         error:
-          "Something went wrong at our end and your message was not sent. " +
-          "Please try again in a moment, or email us directly at contact@lifestory.org.",
+          "Something went wrong at our end and your message was not sent. Please try again in " +
+          (address ? `a moment, or email us directly at ${address}.` : "a moment."),
       };
     }
   });

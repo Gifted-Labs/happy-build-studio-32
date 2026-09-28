@@ -2,6 +2,8 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { renderSitemap } from "./lib/server/sitemap";
+import { handleUpload } from "./lib/server/uploads";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -75,6 +77,20 @@ function applyIndexingPolicy(request: Request, response: Response): Response {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const { pathname } = new URL(request.url);
+
+      // Built from D1 rather than shipped as a static file, so outreaches added
+      // in /admin are listed. Handled before the router because it is not a page.
+      if (pathname === "/sitemap.xml") {
+        return applyIndexingPolicy(request, await renderSitemap());
+      }
+
+      // Photograph uploads from the admin area. Handled here rather than as a
+      // server function because the body is a file; it verifies Access itself.
+      if (pathname === "/admin/upload") {
+        return applyIndexingPolicy(request, await handleUpload(request));
+      }
+
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return applyIndexingPolicy(request, await normalizeCatastrophicSsrResponse(response));

@@ -1,7 +1,10 @@
-import { DEFAULT_WIDTHS, cfImage, media, mediaSrc, srcSet, type MediaKey } from "../../lib/media";
+import { DEFAULT_WIDTHS, cfImage, resolveImage, srcSet, type MediaKey } from "../../lib/media";
 
 type ResponsiveImageProps = {
-  /** Slot in the media manifest, or a ready-made URL for one-off images. */
+  /**
+   * Slot in the media manifest, an R2 object key from an admin upload, or a
+   * ready-made URL. `resolveImage` tells them apart.
+   */
   src: MediaKey | (string & {});
   alt: string;
   /** Intrinsic dimensions. Required — they reserve layout space and stop CLS. */
@@ -20,10 +23,6 @@ type ResponsiveImageProps = {
   quality?: number;
   fit?: "scale-down" | "contain" | "cover" | "crop" | "pad";
 };
-
-function isMediaKey(value: string): value is MediaKey {
-  return value in media;
-}
 
 /**
  * An `<img>` that serves appropriately-sized, modern-format images through
@@ -44,7 +43,7 @@ export function ResponsiveImage({
   quality = 80,
   fit,
 }: ResponsiveImageProps) {
-  const origin = isMediaKey(src) ? mediaSrc(src) : src;
+  const origin = resolveImage(src);
 
   // Never offer candidates larger than the image is ever rendered at 2x.
   const ladder = widths.filter((w) => w <= width * 2);

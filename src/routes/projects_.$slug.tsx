@@ -5,26 +5,33 @@ import { Icon } from "../components/landing/motion";
 import { ActionBand, PageShell, siteImages } from "../components/site/page-shell";
 import { ResponsiveImage } from "../components/site/responsive-image";
 import { SiteLink } from "../components/site/site-link";
-import { mediaSrc, cfImage } from "../lib/media";
-import { getProject, projects } from "../data/projects";
+import { resolveImage, cfImage } from "../lib/media";
+import { loadProjectPage } from "../lib/content";
 
-const SITE_URL = (import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com").replace(/\/$/, "");
+const SITE_URL = (
+  import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com"
+).replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects_/$slug")({
-  loader: ({ params }) => {
-    const project = getProject(params.slug);
-    if (!project) throw notFound();
-    return project;
+  /**
+   * Read per request. A project added in /admin is reachable at its URL straight
+   * away; an unpublished or unknown slug is a 404 rather than an empty page.
+   */
+  loader: async ({ params }) => {
+    const page = await loadProjectPage({ data: params.slug });
+    if (!page) throw notFound();
+    return page;
   },
   /**
    * Per-page metadata. Without this every project inherits the root's single
    * site-wide title, so search results and shared links are indistinguishable
    * from one another and from the home page.
    */
-  head: ({ loaderData: project }) => {
+  head: ({ loaderData }) => {
+    const project = loaderData?.project;
     if (!project) return {};
     const title = `${project.shortTitle} — Life Story Foundation`;
-    const image = mediaSrc(project.heroImage);
+    const image = resolveImage(project.heroImage);
 
     return {
       meta: [
@@ -44,7 +51,7 @@ export const Route = createFileRoute("/projects_/$slug")({
 });
 
 function ProjectDetailPage() {
-  const project = Route.useLoaderData();
+  const { project, siblings } = Route.useLoaderData();
   const [openStep, setOpenStep] = useState(0);
   const [openFaq, setOpenFaq] = useState(0);
   const [activeImage, setActiveImage] = useState<number | null>(null);
@@ -98,7 +105,7 @@ function ProjectDetailPage() {
                 Explore Our Projects
               </div>
               <div className="p-3">
-                {projects.map((item) => (
+                {siblings.map((item) => (
                   <SiteLink
                     key={item.slug}
                     href={`/projects/${item.slug}`}
@@ -419,7 +426,7 @@ function ProjectDetailPage() {
             onClick={(event) => event.stopPropagation()}
           >
             <img
-              src={cfImage(mediaSrc(project.gallery[activeImage].src), {
+              src={cfImage(resolveImage(project.gallery[activeImage].src), {
                 width: 1600,
                 fit: "scale-down",
               })}

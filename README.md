@@ -60,7 +60,7 @@ widget — a mismatched pair fails every verification. The site key is already i
 
 `TURNSTILE_HOSTNAMES` in `wrangler.jsonc` lists the hostnames a solved challenge
 may come from. It matters because one widget is registered for several domains, so
-`success: true` alone only proves the token came from *a* page using our site key —
+`success: true` alone only proves the token came from _a_ page using our site key —
 not from ours. The handler additionally requires the token's `action` to equal the
 submission's `kind`, so a token minted at the newsletter box cannot be spent
 against the contact form.
@@ -88,13 +88,49 @@ for the domain, or every send is rejected.
 npm run deploy
 ```
 
-Run `npm run db:migrate:remote` as well whenever `migrations/` has gained a file.
+Run `npm run db:migrate:remote` as well whenever `migrations/` has gained a file —
+**before** deploying, not after: the pages read those tables on every request, so a
+deploy that lands first serves errors until the migration catches up.
+
+## Editing the site
+
+Outreaches, news stories and their photographs are edited at **`/admin`**, behind
+Cloudflare Access. They live in D1 and are read on every request, so a saved and
+published change is live immediately — no deploy, no rebuild.
+
+| Tab             | What it holds                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Submissions** | Contact, donation, newsletter and volunteer form entries, and whether the notification email actually sent |
+| **Outreaches**  | Everything on `/projects` and each `/projects/<slug>` page, including the gallery                          |
+| **News**        | The cards on `/news`                                                                                       |
+
+Everything else — the mission, the about page, the FAQ — is in code and changes
+with a deploy. That is deliberate: those pages change about once a year, and an
+editor for them would cost more than it saves.
+
+Two things worth knowing:
+
+- **New records start as drafts.** They are listed in `/admin` and invisible on the
+  site until _Publish_ is ticked.
+- **The web address is fixed once created.** Changing a slug would orphan every
+  link to the page, so the field is locked after the first save.
+
+Photographs are uploaded straight from the editor. JPEG and PNG only, 20 MB max;
+HEIC is refused with instructions, because a Worker cannot convert it. **Location
+data is stripped before anything is stored** — phone photos record GPS
+coordinates, and these were taken at schools and a children's home. Any file whose
+metadata cannot be removed with certainty is rejected rather than uploaded (see
+`src/lib/server/image-metadata.ts`).
+
+Who may sign in is set in Cloudflare Zero Trust → Access → Applications → the
+`/admin` application's policy. Those people need no Cloudflare account: Access
+emails them a one-time code.
 
 ## Project photographs
 
-The project photos live in the public R2 bucket `lifestory-media`, served from the
-host in `VITE_MEDIA_HOST`. `src/lib/media.ts` maps each slot to an object key
-(`projects/<slug>/hero.jpg`, `secondary.jpg`, `01`–`05.jpg`).
+The site-wide photographs (hero, about, team portraits) are **not** editable in
+`/admin` — they are slots in `src/lib/media.ts`, mapped to object keys in the
+public R2 bucket `lifestory-media` and served from the host in `VITE_MEDIA_HOST`.
 
 To add or replace one:
 
@@ -107,8 +143,8 @@ The `--remote` flag is not optional. Without it wrangler writes to the **local**
 simulator in `.wrangler/state` and reports success, while the public URL keeps
 returning 404.
 
-Strip metadata before uploading — phone photos carry GPS coordinates, and these
-were taken at schools and a children's home:
+Strip metadata before uploading this way — the command-line route has none of the
+protection `/admin` applies, and phone photos carry GPS coordinates:
 
 ```bash
 magick input.jpg -auto-orient -strip -resize '2400x2400>' -quality 86 output.jpg
@@ -128,7 +164,8 @@ magick input.jpg -auto-orient -strip -resize '2400x2400>' -quality 86 output.jpg
 produce both outputs: nitro's cloudflare preset takes over vite's server output and
 emits `index.mjs`, while the prerenderer needs to boot `dist/server/server.js`.
 
-1. **Prerender pass** (nitro off) renders every route to static HTML.
+1. **Prerender pass** (nitro off) renders the pages whose content is in code to
+   static HTML — the list is `STATIC_PAGES` in `src/lib/site-pages.ts`.
 2. **Worker pass** (nitro on) builds the deployable Worker, and the first pass's
    finished static site is copied over its asset directory.
 
@@ -140,13 +177,20 @@ Consequences worth knowing before changing the build:
   file. Everything else — bindings, `vars`, `name` — passes through, and this is
   the only way the Worker gets its D1 binding.
 - One build warning is expected and harmless: `Wrangler config assets is
-  overridden and will be ignored`. The keys are deep-merged, so the
+overridden and will be ignored`. The keys are deep-merged, so the
   `html_handling` set in the root file does survive alongside nitro's values.
 - `cloudflare:workers` is handled differently per pass — aliased to a stub in pass
   1 (whose output Node actually executes) and externalized in pass 2 (whose output
   only runs on Workers). See the comment in `vite.config.ts`.
-- Pages are served as Workers static assets rather than server-rendered, which
-  keeps them free, unmetered, and clear of the Free plan's 10 ms CPU limit.
+- Those pages are served as Workers static assets rather than server-rendered,
+  which keeps them free, unmetered, and clear of the Free plan's 10 ms CPU limit.
+- `/projects`, `/projects/:slug`, `/news` and `/admin` are the exceptions: they
+  read D1 per request and are excluded from prerendering. Prerendering them would
+  freeze their content at deploy time, which is the one thing a CMS must not do —
+  and a static asset would be served ahead of the Worker, so the freeze would be
+  permanent. The exclusion is `isDynamicPath` in `src/lib/site-pages.ts`.
+- `sitemap.xml` is generated by the Worker (`src/lib/server/sitemap.ts`) rather
+  than written at build time, so an outreach published after the deploy is listed.
 
 ## Form submissions
 
@@ -171,4 +215,4 @@ npx wrangler d1 execute lifestory-submissions --remote \
 
 Server-only code lives in `src/lib/server/`, which the framework refuses to bundle
 into the client. The server function itself sits outside that directory on
-purpose — it is an RPC boundary the client is *meant* to import.
+purpose — it is an RPC boundary the client is _meant_ to import.

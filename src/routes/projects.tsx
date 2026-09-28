@@ -5,14 +5,17 @@ import {
   PageShell,
   SplitFeature,
   StatsBand,
+  siteImages,
 } from "../components/site/page-shell";
-import { projects } from "../data/projects";
+import { loadProjects } from "../lib/content";
 
 const SITE_URL = (
   import.meta.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com"
 ).replace(/\/$/, "");
 
 export const Route = createFileRoute("/projects")({
+  // Read per request: an outreach added in /admin appears here without a deploy.
+  loader: () => loadProjects(),
   head: () => ({
     meta: [
       { title: "Our Projects — Life Story Foundation" },
@@ -37,18 +40,20 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 /**
- * Built from the `projects` data rather than a hand-written list, so an outreach
- * added there shows up here automatically instead of drifting out of sync.
+ * Built from whatever outreaches are published, so one added in /admin shows up
+ * here automatically instead of drifting out of sync with a hand-written list.
  */
 function ProjectsPage() {
-  const [featured] = projects;
+  const projects = Route.useLoaderData();
+  const featured = projects[0];
 
   return (
     <PageShell
       eyebrow="OUR PROJECTS"
       title="Outreaches built around real needs"
       intro="Each outreach is planned with the schools, homes, and communities it serves — and recorded here as it actually happened."
-      image={featured.heroImage}
+      // With nothing published yet the page still needs a header image.
+      image={featured?.heroImage ?? siteImages.community}
     >
       <InfoGrid
         eyebrow="OUR OUTREACHES"
@@ -65,15 +70,17 @@ function ProjectsPage() {
           imageAlt: project.gallery[0]?.alt ?? project.shortTitle,
         }))}
       />
-      <SplitFeature
-        eyebrow="FEATURED PROJECT"
-        title={featured.title}
-        body={featured.summary}
-        image={featured.secondaryImage}
-        imageAlt={featured.gallery[0]?.alt ?? featured.shortTitle}
-        actionLabel="View Project Details"
-        actionHref={`/projects/${featured.slug}`}
-      />
+      {featured ? (
+        <SplitFeature
+          eyebrow="FEATURED PROJECT"
+          title={featured.title}
+          body={featured.summary}
+          image={featured.secondaryImage}
+          imageAlt={featured.gallery[0]?.alt ?? featured.shortTitle}
+          actionLabel="View Project Details"
+          actionHref={`/projects/${featured.slug}`}
+        />
+      ) : null}
       <StatsBand
         eyebrow="OUR REACH"
         title="What these outreaches delivered"

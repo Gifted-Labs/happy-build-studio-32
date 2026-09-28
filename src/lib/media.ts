@@ -110,6 +110,14 @@ export const media = {
 
 export type MediaKey = keyof typeof media;
 
+/**
+ * An image reference as content stores it: a key in the manifest above, an R2
+ * object key from an admin upload, or an absolute URL. The `string & {}` keeps
+ * editor completion for the manifest keys while still accepting the others.
+ * Resolve one with `resolveImage`.
+ */
+export type ImageRef = MediaKey | (string & {});
+
 /** Host serving the R2 bucket, e.g. "https://media.lifestorycharitablefoundation.com". */
 const MEDIA_HOST = (import.meta.env.VITE_MEDIA_HOST ?? "").replace(/\/$/, "");
 
@@ -126,6 +134,25 @@ const TRANSFORM = import.meta.env.VITE_IMAGE_TRANSFORM
 export function mediaSrc(key: MediaKey): string {
   const entry = media[key];
   return MEDIA_HOST ? `${MEDIA_HOST}/${entry.path}` : entry.fallback;
+}
+
+/**
+ * Resolve an image reference of unknown provenance to a URL.
+ *
+ * Content stored in D1 refers to images in three ways, and the editor should not
+ * have to care which: a key in the manifest above (what the original content was
+ * written against), an object key uploaded to R2 through /admin, or an absolute
+ * URL. Anything unrecognised is treated as an R2 key, which is what an upload
+ * produces.
+ */
+export function resolveImage(reference: string): string {
+  const ref = reference.trim();
+  if (!ref) return "";
+  if (/^(https?:)?\/\//.test(ref) || ref.startsWith("data:")) return ref;
+  if (ref in media) return mediaSrc(ref as MediaKey);
+
+  const key = ref.replace(/^\/+/, "");
+  return MEDIA_HOST ? `${MEDIA_HOST}/${key}` : `/${key}`;
 }
 
 export type TransformOptions = {

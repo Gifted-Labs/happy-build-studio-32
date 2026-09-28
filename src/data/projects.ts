@@ -22,6 +22,14 @@ export type ProjectOutreach = {
 /**
  * The foundation's completed outreaches, newest first.
  *
+ * These are a seed, not the source of truth: migration 0003 loaded them into the
+ * `projects` and `project_photos` tables, /admin edits them there, and every page
+ * reads D1. What remains here is the fallback used when there is no database
+ * binding — `vite dev` — so the pages still render while working on them locally.
+ *
+ * Editing this file changes nothing on the live site. Edit the outreaches in
+ * /admin. See src/lib/content.ts.
+ *
  * Every date, place, and figure here comes from the foundation's own account of
  * the event. Where a project's record gives no number, its `metrics` list is
  * short or empty rather than padded — an invented figure on a charity's page is

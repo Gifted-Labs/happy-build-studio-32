@@ -1,43 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ActionBand, PageShell, SplitFeature, siteImages } from "../components/site/page-shell";
 import { ResponsiveImage } from "../components/site/responsive-image";
-import type { MediaKey } from "../lib/media";
 import { ActionLink, SectionLabel } from "../components/landing/reference-layout";
 import { Icon } from "../components/landing/motion";
+import { loadNews } from "../lib/content";
 
-export const Route = createFileRoute("/news")({ component: NewsPage });
-
-const stories: Array<{
-  id: string;
-  image: MediaKey;
-  date: string;
-  title: string;
-  body: string;
-}> = [
-  {
-    id: "community-hub",
-    image: "news1",
-    date: "October 24, 2024",
-    title: "Opening the New Community Hub in Kumasi",
-    body: "The new hub gives families a shared place for tutoring, skills workshops, and local meetings.",
-  },
-  {
-    id: "digital-divide",
-    image: "news2",
-    date: "October 12, 2024",
-    title: "Bridging the Digital Divide with 50 New Laptops",
-    body: "Students and teachers can now access digital learning resources through a locally managed computer program.",
-  },
-  {
-    id: "volunteer-program",
-    image: "news3",
-    date: "September 28, 2024",
-    title: "Volunteer Program Applications Are Open",
-    body: "Our next volunteer intake supports education, community health, communications, and project coordination.",
-  },
-];
+export const Route = createFileRoute("/news")({
+  // Read per request, so a story published in /admin appears without a deploy.
+  loader: () => loadNews(),
+  component: NewsPage,
+});
 
 function NewsPage() {
+  const stories = Route.useLoaderData();
+
   return (
     <PageShell
       eyebrow="NEWS AND STORIES"
@@ -88,7 +64,7 @@ function NewsPage() {
                   <h2 className="mt-4 font-display text-xl">{story.title}</h2>
                   <p className="mt-3 line-clamp-2 text-sm leading-6 text-white/70">{story.body}</p>
                   <a
-                    href={`#${story.id}`}
+                    href={story.link ?? `#${story.id}`}
                     className="mt-5 flex items-center justify-between border-t border-white/25 pt-4 text-sm font-semibold"
                   >
                     Read story <Icon name="arrow_outward" />

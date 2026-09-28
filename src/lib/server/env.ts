@@ -9,8 +9,10 @@
 import { env } from "cloudflare:workers";
 
 type Bindings = {
-  /** D1 database holding form submissions. */
+  /** D1 database holding form submissions and the site's editable content. */
   DB?: D1Database;
+  /** R2 bucket holding every photograph; written to by the admin area. */
+  MEDIA?: R2Bucket;
   /** Turnstile secret, from `wrangler secret put TURNSTILE_SECRET_KEY`. */
   TURNSTILE_SECRET_KEY?: string;
   /**
@@ -61,4 +63,15 @@ export function getDb(): D1Database | null {
   }
 
   throw new Error("D1 binding `DB` is not configured on this Worker.");
+}
+
+/**
+ * R2 handle for photograph uploads, or null when the binding is missing.
+ *
+ * Unlike `getDb` this never throws: an upload is a single admin action, and a
+ * missing binding should tell the person at the keyboard what is wrong rather
+ * than surface as a 500 halfway through choosing a file.
+ */
+export function getMediaBucket(): R2Bucket | null {
+  return bindings.MEDIA ?? null;
 }

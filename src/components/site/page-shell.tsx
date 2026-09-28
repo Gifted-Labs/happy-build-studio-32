@@ -3,7 +3,7 @@ import { LandingFooter, LandingNav, SectionLabel } from "../landing/reference-la
 import { Icon, MotionReveal } from "../landing/motion";
 import { ResponsiveImage } from "./responsive-image";
 import { SiteLink } from "./site-link";
-import type { MediaKey } from "../../lib/media";
+import type { ImageRef, MediaKey } from "../../lib/media";
 
 /** Slots the interior pages draw on. See lib/media.ts for the manifest. */
 export const siteImages = {
@@ -22,7 +22,7 @@ type PageShellProps = {
   eyebrow: string;
   title: string;
   intro: string;
-  image: MediaKey;
+  image: ImageRef;
   children: ReactNode;
 };
 
@@ -72,7 +72,7 @@ export type InfoItem = {
   title: string;
   body: string;
   /** Optional photograph. Given one, the card leads with it instead of the icon. */
-  image?: MediaKey;
+  image?: ImageRef;
   imageAlt?: string;
 };
 
@@ -147,7 +147,7 @@ type SplitFeatureProps = {
   eyebrow: string;
   title: string;
   body: string;
-  image: MediaKey;
+  image: ImageRef;
   imageAlt: string;
   actionLabel: string;
   actionHref: string;

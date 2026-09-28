@@ -7,7 +7,7 @@
 import { fileURLToPath } from "node:url";
 
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
-import { projects } from "./src/data/projects";
+import { STATIC_PAGES, isDynamicPath } from "./src/lib/site-pages";
 
 // Public origin, used for absolute URLs in the sitemap and social meta.
 const SITE_URL = process.env.VITE_SITE_URL ?? "https://lifestorycharitablefoundation.com";
@@ -66,13 +66,13 @@ export default defineConfig({
     server: { entry: "server" },
 
     /**
-     * Every page here is static content, so build them to HTML at deploy time.
-     * Prerendered pages are served as Workers static assets: free, unmetered, and
-     * exempt from the Workers Free plan's 10 ms CPU limit per invocation, which
-     * server-rendering React on every request would risk exceeding.
+     * Pages whose content lives in code are built to HTML at deploy time and
+     * served as Workers static assets: free, unmetered, and exempt from the
+     * Workers Free plan's 10 ms CPU limit per invocation.
      *
-     * The Worker still runs for server functions (the form handlers), which stay
-     * well inside that budget.
+     * The CMS-driven pages (/projects, /projects/:slug, /news) are excluded —
+     * see `filter`. They read D1 per request, which is the whole point of the
+     * admin area: prerendering would freeze their content at deploy time.
      */
     prerender: {
       enabled: PRERENDER_PASS,
@@ -88,27 +88,26 @@ export default defineConfig({
       filter: (page: { path: string }) =>
         !page.path.includes("#") &&
         !page.path.includes("?") &&
-        // The admin area reads D1 per request and must never be published as
-        // static HTML or listed in the sitemap.
-        !page.path.startsWith("/admin"),
+        /**
+         * Crawling the static pages reaches /projects and /news through the
+         * navigation. They — and the admin area — read D1 per request, so their
+         * HTML must never be written to a static asset: an asset would be served
+         * ahead of the Worker and the site would show whatever the database held
+         * on the day of the deploy, forever.
+         */
+        !isDynamicPath(page.path),
     },
 
-    // Routes to start from, including the dynamic project pages, so a route stays
-    // covered even if nothing happens to link to it.
-    pages: [
-      { path: "/" },
-      { path: "/about" },
-      { path: "/projects" },
-      { path: "/get-involved" },
-      { path: "/news" },
-      { path: "/donate" },
-      { path: "/contact" },
-      { path: "/faq" },
-      ...projects.map((project) => ({ path: `/projects/${project.slug}` })),
-    ],
+    // Routes to start from, so a page stays covered even if nothing links to it.
+    pages: STATIC_PAGES.map((path) => ({ path })),
 
+    /**
+     * The plugin writes a sitemap listing the pages it prerendered, which is no
+     * longer the whole site — and a static file could not list an outreach added
+     * after the deploy. src/lib/server/sitemap.ts builds it from D1 instead.
+     */
     sitemap: {
-      enabled: true,
+      enabled: false,
       host: SITE_URL,
     },
   },

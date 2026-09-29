@@ -1,35 +1,42 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
+import { ArrowDown, ArrowUp, ImageOff, Plus, Trash2 } from "lucide-react";
 
 import { resolveImage } from "../../lib/media";
+import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
+import { Textarea } from "../ui/textarea";
 
 /**
  * Form controls for the admin editors.
  *
- * Plain inputs on a plain background, deliberately unlike the public site: this
- * is an internal tool, and making it look like the foundation's pages would
- * invite editing it as if the changes were already live.
+ * Built on the project's own input components so every field in the editor
+ * shares one focus ring, one border and one disabled state. The surfaces stay
+ * plainer than the public site's on purpose: this is the tool that edits the
+ * pages, and it should not be mistaken for them.
  */
-
-const LABEL = "block text-xs font-semibold uppercase tracking-wide text-slate-600";
-const INPUT =
-  "mt-1 w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 " +
-  "outline-none focus:border-slate-900";
 
 export function Field({
   label,
   hint,
+  htmlFor,
   children,
 }: {
   label: string;
   hint?: string;
+  htmlFor?: string;
   children: ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className={LABEL}>{label}</span>
+    <div className="space-y-1.5">
+      <Label htmlFor={htmlFor} className="text-xs font-semibold uppercase tracking-wide">
+        {label}
+      </Label>
       {children}
-      {hint ? <span className="mt-1 block text-xs text-slate-500">{hint}</span> : null}
-    </label>
+      {hint ? <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p> : null}
+    </div>
   );
 }
 
@@ -50,15 +57,17 @@ export function TextField({
   type?: "text" | "date" | "url";
   disabled?: boolean;
 }) {
+  const id = useId();
   return (
-    <Field label={label} hint={hint}>
-      <input
+    <Field label={label} hint={hint} htmlFor={id}>
+      <Input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}
         disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
-        className={`${INPUT} ${disabled ? "bg-slate-100 text-slate-500" : ""}`}
+        className={cn(disabled && "bg-muted text-muted-foreground")}
       />
     </Field>
   );
@@ -79,19 +88,26 @@ export function TextAreaField({
   rows?: number;
   placeholder?: string;
 }) {
+  const id = useId();
   return (
-    <Field label={label} hint={hint}>
-      <textarea
+    <Field label={label} hint={hint} htmlFor={id}>
+      <Textarea
+        id={id}
         rows={rows}
         value={value}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
-        className={`${INPUT} leading-6`}
+        className="leading-relaxed"
       />
     </Field>
   );
 }
 
+/**
+ * Publishing is a switch rather than a checkbox: it is the one control on the
+ * page that changes what the public sees, and it should read as a state that is
+ * on or off rather than an item that is ticked.
+ */
 export function CheckboxField({
   label,
   hint,
@@ -103,32 +119,41 @@ export function CheckboxField({
   checked: boolean;
   onChange: (checked: boolean) => void;
 }) {
+  const id = useId();
   return (
-    <label className="flex items-start gap-3 rounded border border-slate-200 bg-white p-3">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(event) => onChange(event.target.checked)}
-        className="mt-0.5 h-4 w-4"
-      />
-      <span>
-        <span className="block text-sm font-semibold text-slate-800">{label}</span>
-        {hint ? <span className="block text-xs text-slate-500">{hint}</span> : null}
-      </span>
-    </label>
+    <div
+      className={cn(
+        "flex items-start gap-4 rounded-xl border p-4 transition-colors",
+        checked ? "border-primary/40 bg-primary/5" : "border-border bg-card",
+      )}
+    >
+      <Switch id={id} checked={checked} onCheckedChange={onChange} className="mt-0.5" />
+      <div className="min-w-0">
+        <Label htmlFor={id} className="text-sm font-semibold">
+          {label}
+        </Label>
+        {hint ? <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{hint}</p> : null}
+      </div>
+    </div>
   );
 }
 
 /** A photograph as it will actually be served, so a wrong reference is obvious. */
 export function ImagePreview({ src }: { src: string }) {
   const url = resolveImage(src);
-  if (!url) return null;
+  if (!url) {
+    return (
+      <div className="mt-2 grid h-20 w-32 place-items-center rounded-lg border border-dashed border-border bg-muted/50">
+        <ImageOff className="size-4 text-muted-foreground/60" aria-hidden />
+      </div>
+    );
+  }
 
   return (
     <img
       src={url}
       alt=""
-      className="mt-2 h-20 w-32 rounded border border-slate-200 object-cover"
+      className="mt-2 h-20 w-32 rounded-lg border border-border object-cover"
       // A broken reference should read as broken rather than as an empty box.
       onError={(event) => {
         event.currentTarget.style.opacity = "0.25";
@@ -185,31 +210,82 @@ export function Repeater<T extends Record<string, string>>({
 
   return (
     <div>
-      <span className={LABEL}>{label}</span>
-      {hint ? <span className="mt-1 block text-xs text-slate-500">{hint}</span> : null}
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <Label className="text-xs font-semibold uppercase tracking-wide">{label}</Label>
+        {value.length > 0 ? (
+          <span className="text-xs tabular-nums text-muted-foreground">
+            {value.length} {value.length === 1 ? "entry" : "entries"}
+          </span>
+        ) : null}
+      </div>
+      {hint ? <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{hint}</p> : null}
 
       <div className="mt-2 space-y-2">
         {value.map((row, index) => (
-          <div key={index} className="rounded border border-slate-200 bg-white p-3">
+          <div key={index} className="rounded-xl border border-border bg-card p-3">
+            <div className="flex items-center justify-between gap-2 pb-2">
+              <span className="text-xs font-semibold tabular-nums text-muted-foreground">
+                #{index + 1}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  onClick={() => move(index, -1)}
+                  disabled={index === 0}
+                  aria-label={`Move ${label} ${index + 1} up`}
+                >
+                  <ArrowUp />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7"
+                  onClick={() => move(index, 1)}
+                  disabled={index === value.length - 1}
+                  aria-label={`Move ${label} ${index + 1} down`}
+                >
+                  <ArrowDown />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  onClick={() => onChange(value.filter((_, i) => i !== index))}
+                  aria-label={`Remove ${label} ${index + 1}`}
+                >
+                  <Trash2 />
+                </Button>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-3">
               {columns.map((column) => (
-                <div key={column.key} className={column.width ?? "min-w-[12rem] flex-1"}>
-                  <span className="text-xs font-medium text-slate-500">{column.label}</span>
+                <div
+                  key={column.key}
+                  className={cn("space-y-1", column.width ?? "min-w-[12rem] flex-1")}
+                >
+                  <Label className="text-xs font-medium text-muted-foreground">
+                    {column.label}
+                  </Label>
                   {column.textarea ? (
-                    <textarea
+                    <Textarea
                       rows={2}
                       value={row[column.key]}
                       placeholder={column.placeholder}
                       onChange={(event) => update(index, column.key, event.target.value)}
-                      className={`${INPUT} leading-6`}
+                      className="leading-relaxed"
                     />
                   ) : (
-                    <input
+                    <Input
                       type="text"
                       value={row[column.key]}
                       placeholder={column.placeholder}
                       onChange={(event) => update(index, column.key, event.target.value)}
-                      className={INPUT}
                     />
                   )}
                 </div>
@@ -217,44 +293,20 @@ export function Repeater<T extends Record<string, string>>({
             </div>
 
             {renderExtra?.(row, index)}
-
-            <div className="mt-2 flex items-center gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => move(index, -1)}
-                disabled={index === 0}
-                className="rounded border border-slate-200 px-2 py-1 disabled:opacity-40"
-              >
-                ↑
-              </button>
-              <button
-                type="button"
-                onClick={() => move(index, 1)}
-                disabled={index === value.length - 1}
-                className="rounded border border-slate-200 px-2 py-1 disabled:opacity-40"
-              >
-                ↓
-              </button>
-              <button
-                type="button"
-                onClick={() => onChange(value.filter((_, i) => i !== index))}
-                className="rounded border border-red-200 px-2 py-1 text-red-700"
-              >
-                Remove
-              </button>
-              <span className="ml-auto text-slate-400">#{index + 1}</span>
-            </div>
           </div>
         ))}
       </div>
 
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={() => onChange([...value, { ...empty }])}
-        className="mt-2 rounded border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700"
+        className="mt-2"
       >
+        <Plus aria-hidden />
         {addLabel}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -83,3 +83,15 @@ const KIND_LABELS: Record<SubmissionKind, string> = {
 export function kindLabel(kind: SubmissionKind): string {
   return KIND_LABELS[kind];
 }
+
+/**
+ * A stored timestamp as a person reads it. D1 writes these without a zone; they
+ * are UTC, so the `Z` is added when it is missing rather than letting the
+ * browser read them as local time and shift every row by the offset.
+ */
+export function formatWhen(value: string): string {
+  const date = new Date(value.endsWith("Z") ? value : `${value}Z`);
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+}

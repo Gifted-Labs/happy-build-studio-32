@@ -1,4 +1,7 @@
 import { useRef, useState } from "react";
+import { ImagePlus, Loader2, TriangleAlert } from "lucide-react";
+
+import { Button } from "../ui/button";
 
 /**
  * Choose photographs and upload them to R2.
@@ -82,6 +85,8 @@ export function UploadButton({
     if (input.current) input.current.value = "";
   }
 
+  const busy = status?.startsWith("Uploading") ?? false;
+
   return (
     <div className="mt-2">
       <input
@@ -92,18 +97,24 @@ export function UploadButton({
         onChange={(event) => void onFiles(event.target.files)}
         className="hidden"
       />
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={() => input.current?.click()}
-        disabled={status?.startsWith("Uploading") ?? false}
-        className="rounded border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 disabled:opacity-50"
+        disabled={busy}
       >
+        {busy ? <Loader2 className="animate-spin" aria-hidden /> : <ImagePlus aria-hidden />}
         {label}
-      </button>
-      {status ? <span className="ml-3 text-xs text-slate-500">{status}</span> : null}
+      </Button>
+      {status ? <span className="ml-3 text-xs text-muted-foreground">{status}</span> : null}
       {error ? (
-        <p className="mt-2 rounded bg-red-50 p-2 text-xs text-red-800" role="alert">
-          {error}
+        <p
+          role="alert"
+          className="mt-2 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-2 text-xs text-destructive"
+        >
+          <TriangleAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+          <span>{error}</span>
         </p>
       ) : null}
     </div>

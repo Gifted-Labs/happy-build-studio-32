@@ -4,6 +4,7 @@ import { useRouter } from "@tanstack/react-router";
 import { removeProject, saveProject } from "../../lib/admin";
 import type { Project } from "../../lib/content";
 import { CheckboxField, ImagePreview, Repeater, TextAreaField, TextField } from "./fields";
+import { EditorFrame, EditorSection } from "./editor-chrome";
 import { UploadButton } from "./upload";
 
 /**
@@ -115,9 +116,6 @@ function toInput(form: ProjectForm) {
   };
 }
 
-const SECTION = "rounded-lg border border-slate-200 bg-slate-50 p-4";
-const SECTION_TITLE = "text-sm font-semibold text-slate-800";
-
 export function ProjectEditor({
   project,
   onClose,
@@ -185,36 +183,22 @@ export function ProjectEditor({
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-lg font-semibold text-slate-900">
-          {existing ? form.shortTitle || form.slug : "New outreach"}
-        </h2>
-        <span
-          className={`rounded px-2 py-1 text-xs font-semibold ${
-            form.published ? "bg-green-100 text-green-800" : "bg-slate-200 text-slate-700"
-          }`}
-        >
-          {form.published ? "Published" : "Draft"}
-        </span>
-        <button
-          type="button"
-          onClick={onClose}
-          className="ml-auto text-sm font-semibold text-slate-500"
-        >
-          Back to list
-        </button>
-      </div>
-
-      {error ? (
-        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-800" role="alert">
-          {error}
-        </p>
-      ) : null}
-
-      <section className={SECTION}>
-        <h3 className={SECTION_TITLE}>The basics</h3>
-        <div className="mt-3 grid gap-4 md:grid-cols-2">
+    <EditorFrame
+      title={existing ? form.shortTitle || form.slug : "New outreach"}
+      published={form.published}
+      existing={existing}
+      busy={busy}
+      error={error}
+      onClose={onClose}
+      onSave={save}
+      onDelete={destroy}
+      deleteLabel="Delete this outreach"
+    >
+      <EditorSection
+        title="The basics"
+        description="What the outreach was, and when and where it happened."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
           <TextField
             label="Web address"
             value={form.slug}
@@ -281,11 +265,13 @@ export function ProjectEditor({
             hint="One or two sentences. Used on the card, the page intro, and when the link is shared."
           />
         </div>
-      </section>
+      </EditorSection>
 
-      <section className={SECTION}>
-        <h3 className={SECTION_TITLE}>Photographs</h3>
-        <div className="mt-3 grid gap-4 md:grid-cols-2">
+      <EditorSection
+        title="Photographs"
+        description="Location data is removed from every photograph before it is stored."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
           <div>
             <TextField
               label="Main photograph"
@@ -341,16 +327,18 @@ export function ProjectEditor({
               }))
             }
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-2 text-xs text-muted-foreground">
             JPEG or PNG, up to 20 MB. Location data is removed from every photograph before it is
             stored. iPhone photos saved as HEIC have to be exported as JPEG first.
           </p>
         </div>
-      </section>
+      </EditorSection>
 
-      <section className={SECTION}>
-        <h3 className={SECTION_TITLE}>The story</h3>
-        <div className="mt-3">
+      <EditorSection
+        title="The story"
+        description="The account of the outreach, and the figures and steps shown down the page."
+      >
+        <div>
           <TextAreaField
             label="Description"
             value={form.description}
@@ -414,7 +402,7 @@ export function ProjectEditor({
             addLabel="Add a question"
           />
         </div>
-      </section>
+      </EditorSection>
 
       <CheckboxField
         label="Publish this outreach"
@@ -422,69 +410,6 @@ export function ProjectEditor({
         checked={form.published}
         onChange={(value) => set("published", value)}
       />
-
-      <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
-        <button
-          type="button"
-          onClick={save}
-          disabled={busy}
-          className="rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        >
-          {busy ? "Saving…" : "Save"}
-        </button>
-        <button type="button" onClick={onClose} className="text-sm font-semibold text-slate-600">
-          Cancel
-        </button>
-        {existing ? (
-          <ConfirmDelete label="Delete this outreach" onConfirm={destroy} disabled={busy} />
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Deletion behind a second click rather than a browser `confirm()`, which blocks
- * the page and reads as a system error rather than a decision.
- */
-export function ConfirmDelete({
-  label,
-  onConfirm,
-  disabled,
-}: {
-  label: string;
-  onConfirm: () => void;
-  disabled?: boolean;
-}) {
-  const [armed, setArmed] = useState(false);
-
-  if (!armed) {
-    return (
-      <button
-        type="button"
-        onClick={() => setArmed(true)}
-        disabled={disabled}
-        className="ml-auto text-sm font-semibold text-red-700 disabled:opacity-50"
-      >
-        {label}
-      </button>
-    );
-  }
-
-  return (
-    <span className="ml-auto flex items-center gap-3 text-sm">
-      <span className="text-slate-600">This cannot be undone.</span>
-      <button
-        type="button"
-        onClick={onConfirm}
-        disabled={disabled}
-        className="rounded bg-red-700 px-3 py-1.5 font-semibold text-white disabled:opacity-50"
-      >
-        Delete
-      </button>
-      <button type="button" onClick={() => setArmed(false)} className="text-slate-600">
-        Keep it
-      </button>
-    </span>
+    </EditorFrame>
   );
 }
